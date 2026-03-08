@@ -1,0 +1,162 @@
+:root {
+  /* Premium Earthy Palette */
+  --background: #E8DBC4;
+  --card-bg: #C7B7A3;
+  --primary: #6D2932;
+  --primary-dark: #561C24;
+  --white: #FFFFFF;
+  --text-main: #2D241E;
+  --text-muted: #5A4E44;
+
+  /* Spacing & Radius */
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 8px;
+  --spacing-xl: 64px;
+  --spacing-lg: 32px;
+  --spacing-md: 20px;
+
+  /* Shadows */
+  --shadow-premium: 0 20px 40px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 30px 60px rgba(109, 41, 50, 0.15);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--background);
+  color: var(--text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--primary-dark);
+}
+
+/* Typography Utilities */
+.hero-title {
+  font-size: 4.5rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.sub-title {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  max-width: 600px;
+}
+
+/* Premium Layout Elements */
+.section-padding {
+  padding: var(--spacing-xl) 10%;
+}
+
+.glass-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-premium);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Buttons */
+.btn-premium {
+  background: var(--primary);
+  color: var(--white);
+  padding: 18px 40px;
+  border-radius: 100px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btn-premium:hover {
+  background: var(--primary-dark);
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(109, 41, 50, 0.3);
+}
+
+/* Form Styling */
+.input-premium {
+  width: 100%;
+  padding: 16px 20px;
+  background: var(--card-bg);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  font-size: 1rem;
+  font-weight: 600;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.input-premium:focus {
+  border-color: var(--primary);
+  background: var(--white);
+}
+
+.input-label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  color: var(--primary);
+}
+
+/* Transitions */
+.fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 3rem;
+  }
+
+  .section-padding {
+    padding: 40px 5%;
+  }
+}
