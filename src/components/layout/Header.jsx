@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, User as UserIcon, LogOut, Settings, ChevronDown } from 'lucide-react';
+import { Bell, User as UserIcon, LogOut, ChevronDown } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -14,21 +14,71 @@ const Header = () => {
     const unreadCount = notifications.filter(n => !n.read).length;
 
     return (
-        <header className="h-[80px] border-b border-neutral-200 bg-white/80 backdrop-blur-md sticky top-0 z-40 px-8 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-                <h2 className="text-xl font-bold text-neutral-800">Welcome, <span className="text-primary">{user?.fullName?.split(' ')[0]}</span></h2>
+        <header style={{
+            height: 72,
+            background: '#ffffff',
+            borderBottom: '1px solid #E8E2DC',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0 36px',
+            position: 'sticky',
+            top: 0,
+            zIndex: 50,
+            flexShrink: 0,
+            gap: 20,
+        }}>
+
+            {/* Left — Welcome */}
+            <div style={{ flex: 1 }}>
+                <h2 style={{
+                    fontSize: '1.05rem',
+                    fontWeight: 700,
+                    color: '#6B6460',
+                    whiteSpace: 'nowrap',
+                    margin: 0,
+                }}>
+                    Welcome,{' '}
+                    <span style={{ color: '#6D2932', fontWeight: 800 }}>
+                        {user?.fullName?.split(' ')[0]}
+                    </span>
+                </h2>
             </div>
 
-            <div className="flex items-center gap-6">
-                {/* Notifications */}
-                <div className="relative">
+            {/* Right — Bell + Profile */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+
+                {/* Bell */}
+                <div style={{ position: 'relative' }}>
                     <button
                         onClick={() => { setShowNotifs(!showNotifs); setShowProfile(false); }}
-                        className="p-3 rounded-xl bg-neutral-100 text-neutral-500 hover:text-primary transition-all relative"
+                        style={{
+                            width: 42, height: 42,
+                            borderRadius: 12,
+                            background: '#F4F0EB',
+                            border: 'none',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            color: '#6B6460',
+                            cursor: 'pointer',
+                            position: 'relative',
+                            transition: 'background 0.2s',
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = '#F5E6E8'}
+                        onMouseLeave={e => e.currentTarget.style.background = '#F4F0EB'}
                     >
-                        <Bell size={22} />
+                        <Bell size={20} />
                         {unreadCount > 0 && (
-                            <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">
+                            <span style={{
+                                position: 'absolute', top: -4, right: -4,
+                                width: 18, height: 18,
+                                background: '#6D2932',
+                                color: 'white',
+                                fontSize: '0.6rem',
+                                fontWeight: 800,
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                borderRadius: '50%',
+                                border: '2px solid white',
+                            }}>
                                 {unreadCount}
                             </span>
                         )}
@@ -40,27 +90,48 @@ const Header = () => {
                                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                className="absolute right-0 mt-4 w-[350px] bg-white rounded-2xl shadow-2xl border border-neutral-100 overflow-hidden"
+                                style={{
+                                    position: 'absolute', right: 0, top: 52,
+                                    width: 340,
+                                    background: 'white',
+                                    borderRadius: 16,
+                                    boxShadow: '0 16px 40px rgba(0,0,0,0.12)',
+                                    border: '1px solid #E8E2DC',
+                                    overflow: 'hidden',
+                                    zIndex: 300,
+                                }}
                             >
-                                <div className="p-4 border-b border-neutral-100 flex justify-between items-center bg-neutral-50/50">
-                                    <span className="font-bold text-sm">Notifications</span>
-                                    <span className="text-xs text-primary font-semibold cursor-pointer">Mark all as read</span>
+                                <div style={{
+                                    padding: '14px 16px',
+                                    borderBottom: '1px solid #E8E2DC',
+                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                    background: '#FAF7F4',
+                                }}>
+                                    <span style={{ fontWeight: 800, fontSize: '0.875rem' }}>Notifications</span>
+                                    <span style={{ fontSize: '0.75rem', color: '#6D2932', fontWeight: 700, cursor: 'pointer' }}>
+                                        Mark all as read
+                                    </span>
                                 </div>
-                                <div className="max-h-[400px] overflow-y-auto">
-                                    {notifications.length > 0 ? (
-                                        notifications.map(notif => (
-                                            <div
-                                                key={notif.id}
-                                                onClick={() => markRead(notif.id)}
-                                                className={`p-4 border-b border-neutral-50 cursor-pointer hover:bg-neutral-50 transition-colors ${!notif.read ? 'bg-primary/5' : ''}`}
-                                            >
-                                                <div className="text-sm font-bold mb-1">{notif.title}</div>
-                                                <div className="text-xs text-neutral-500 line-clamp-2">{notif.message}</div>
-                                                <div className="text-[10px] text-neutral-400 mt-2">{notif.date}</div>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <div className="p-8 text-center text-neutral-400 text-sm">No notifications yet.</div>
+                                <div style={{ maxHeight: 360, overflowY: 'auto' }}>
+                                    {notifications.length > 0 ? notifications.map(notif => (
+                                        <div
+                                            key={notif.id}
+                                            onClick={() => markRead(notif.id)}
+                                            style={{
+                                                padding: '14px 16px',
+                                                borderBottom: '1px solid #F4F0EB',
+                                                cursor: 'pointer',
+                                                background: !notif.read ? '#FDF5F6' : 'white',
+                                            }}
+                                        >
+                                            <div style={{ fontSize: '0.875rem', fontWeight: 700, marginBottom: 4 }}>{notif.title}</div>
+                                            <div style={{ fontSize: '0.78rem', color: '#6B6460' }}>{notif.message}</div>
+                                            <div style={{ fontSize: '0.7rem', color: '#aaa', marginTop: 6 }}>{notif.date}</div>
+                                        </div>
+                                    )) : (
+                                        <div style={{ padding: '32px 16px', textAlign: 'center', color: '#aaa', fontSize: '0.875rem' }}>
+                                            No notifications yet.
+                                        </div>
                                     )}
                                 </div>
                             </motion.div>
@@ -69,19 +140,49 @@ const Header = () => {
                 </div>
 
                 {/* Profile */}
-                <div className="relative">
+                <div style={{ position: 'relative' }}>
                     <button
                         onClick={() => { setShowProfile(!showProfile); setShowNotifs(false); }}
-                        className="flex items-center gap-3 p-2 pr-4 rounded-xl hover:bg-neutral-50 transition-all border border-transparent hover:border-neutral-200"
+                        style={{
+                            display: 'flex', alignItems: 'center', gap: 10,
+                            padding: '6px 12px 6px 6px',
+                            borderRadius: 12,
+                            border: '1px solid #E8E2DC',
+                            background: 'white',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s, border-color 0.2s',
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.background = '#FAF7F4'; e.currentTarget.style.borderColor = '#c8c0b8'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.borderColor = '#E8E2DC'; }}
                     >
-                        <div className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center font-bold">
+                        <div style={{
+                            width: 36, height: 36,
+                            background: '#F5E6E8',
+                            borderRadius: 10,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            color: '#6D2932',
+                            fontWeight: 800,
+                            fontSize: '0.95rem',
+                            flexShrink: 0,
+                        }}>
                             {user?.fullName?.charAt(0)}
                         </div>
-                        <div className="hidden md:block text-left">
-                            <div className="text-sm font-bold text-neutral-800 leading-tight">{user?.fullName}</div>
-                            <div className="text-xs text-neutral-500 capitalize">{user?.role}</div>
+                        <div style={{ textAlign: 'left' }}>
+                            <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#1A1310', lineHeight: 1.2 }}>
+                                {user?.fullName}
+                            </div>
+                            <div style={{ fontSize: '0.72rem', color: '#6B6460', textTransform: 'capitalize' }}>
+                                {user?.role}
+                            </div>
                         </div>
-                        <ChevronDown size={14} className={`text-neutral-400 transition-transform ${showProfile ? 'rotate-180' : ''}`} />
+                        <ChevronDown
+                            size={14}
+                            style={{
+                                color: '#6B6460',
+                                transform: showProfile ? 'rotate(180deg)' : 'rotate(0deg)',
+                                transition: 'transform 0.2s',
+                            }}
+                        />
                     </button>
 
                     <AnimatePresence>
@@ -90,16 +191,54 @@ const Header = () => {
                                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                className="absolute right-0 mt-4 w-[200px] bg-white rounded-2xl shadow-2xl border border-neutral-100 py-2"
+                                style={{
+                                    position: 'absolute', right: 0, top: 52,
+                                    width: 190,
+                                    background: 'white',
+                                    borderRadius: 14,
+                                    boxShadow: '0 16px 40px rgba(0,0,0,0.12)',
+                                    border: '1px solid #E8E2DC',
+                                    overflow: 'hidden',
+                                    zIndex: 300,
+                                    padding: '6px',
+                                }}
                             >
-                                <Link to="/dashboard/profile" className="flex items-center gap-3 px-4 py-3 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-primary transition-all">
-                                    <UserIcon size={18} /> View Profile
+                                <Link
+                                    to="/dashboard/profile"
+                                    style={{
+                                        display: 'flex', alignItems: 'center', gap: 10,
+                                        padding: '10px 12px',
+                                        borderRadius: 8,
+                                        fontSize: '0.875rem',
+                                        fontWeight: 600,
+                                        color: '#1A1310',
+                                        textDecoration: 'none',
+                                    }}
+                                    onMouseEnter={e => e.currentTarget.style.background = '#FAF7F4'}
+                                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                                >
+                                    <UserIcon size={16} /> View Profile
                                 </Link>
+                                <div style={{ height: 1, background: '#E8E2DC', margin: '4px 0' }} />
                                 <button
                                     onClick={logout}
-                                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-all border-t border-neutral-50 mt-2"
+                                    style={{
+                                        display: 'flex', alignItems: 'center', gap: 10,
+                                        padding: '10px 12px',
+                                        borderRadius: 8,
+                                        width: '100%',
+                                        fontSize: '0.875rem',
+                                        fontWeight: 600,
+                                        color: '#DC2626',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        textAlign: 'left',
+                                    }}
+                                    onMouseEnter={e => e.currentTarget.style.background = '#FEF2F2'}
+                                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                 >
-                                    <LogOut size={18} /> Logout
+                                    <LogOut size={16} /> Logout
                                 </button>
                             </motion.div>
                         )}

@@ -7,54 +7,108 @@ import {
     ClipboardList,
     LifeBuoy,
     Info,
-    LayoutDashboard
 } from 'lucide-react';
 
 const Sidebar = () => {
     const menuItems = [
-        { name: "Profile", path: "/dashboard/profile", icon: <User size={20} /> },
-        { name: "Doctor Availability", path: "/dashboard/doctors", icon: <Search size={20} /> },
-        { name: "Appointments", path: "/dashboard/appointments", icon: <Calendar size={20} /> },
-        { name: "Consultation", path: "/dashboard/consultation", icon: <ClipboardList size={20} /> },
-        { name: "Customer Care", path: "/dashboard/support", icon: <LifeBuoy size={20} /> },
-        { name: "About", path: "/dashboard/about", icon: <Info size={20} /> }
+        { name: "Profile", path: "/dashboard/profile", icon: <User size={18} /> },
+        { name: "Doctor Availability", path: "/dashboard/doctors", icon: <Search size={18} /> },
+        { name: "Appointments", path: "/dashboard/appointments", icon: <Calendar size={18} /> },
+        { name: "Consultation", path: "/dashboard/consultation", icon: <ClipboardList size={18} /> },
+        { name: "Customer Care", path: "/dashboard/support", icon: <LifeBuoy size={18} /> },
+        { name: "About", path: "/dashboard/about", icon: <Info size={18} /> },
     ];
 
     return (
-        <aside className="layout-sidebar border-r border-neutral-100 flex flex-col justify-between py-10">
-            <div className="space-y-12">
-                <div className="px-6 flex items-center gap-3">
-                    <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20">M</div>
-                    <span className="text-2xl font-bold brand-gradient tracking-tight">MediConnect</span>
+        <aside style={{
+            position: 'fixed',
+            top: 0, left: 0,
+            width: '260px',
+            height: '100vh',
+            background: '#fff',
+            borderRight: '1px solid #E8E2DC',
+            display: 'flex',
+            flexDirection: 'column',
+            zIndex: 100,
+            overflowY: 'auto',
+        }}>
+            {/* Logo */}
+            <div style={{ padding: '28px 20px 20px', borderBottom: '1px solid #E8E2DC' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{
+                        width: 38, height: 38,
+                        background: '#6D2932',
+                        borderRadius: 10,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: 'white', fontWeight: 900, fontSize: '1.1rem',
+                        flexShrink: 0,
+                        boxShadow: '0 4px 12px rgba(109,41,50,0.25)',
+                    }}></div>
+                    <span style={{
+                        fontSize: '1.1rem',
+                        fontWeight: 800,
+                        color: '#561C24',
+                        letterSpacing: '-0.02em',
+                    }}>MediConnect</span>
                 </div>
-
-                <nav className="px-4 space-y-2">
-                    {menuItems.map((item) => (
-                        <NavLink
-                            key={item.path}
-                            to={item.path}
-                            className={({ isActive }) =>
-                                `flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-300 font-medium ${isActive
-                                    ? 'bg-primary-light text-primary-dark shadow-sm'
-                                    : 'text-neutral-500 hover:bg-neutral-50 hover:text-primary transition-colors hover:translate-x-1'
-                                }`
-                            }
-                        >
-                            {item.icon}
-                            <span className="text-sm">{item.name}</span>
-                        </NavLink>
-                    ))}
-                </nav>
             </div>
 
-            <div className="px-8 mt-auto pt-8 border-t border-neutral-100/50">
-                <div className="p-4 bg-neutral-50/50 rounded-2xl space-y-3 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -translate-x-12 -translate-y-12 transition-transform group-hover:scale-150"></div>
-                    <div className="text-xs text-neutral-400 font-bold uppercase tracking-wider">Storage Used</div>
-                    <div className="h-2 w-full bg-neutral-200 rounded-full overflow-hidden">
-                        <div className="h-full w-14 bg-primary rounded-full"></div>
+            {/* Nav */}
+            <nav style={{ padding: '16px 12px', flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {menuItems.map((item) => (
+                    <NavLink
+                        key={item.path}
+                        to={item.path}
+                        style={({ isActive }) => ({
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 12,
+                            padding: '14px 16px',
+                            borderRadius: 10,
+                            fontSize: '0.875rem',
+                            fontWeight: isActive ? 700 : 600,
+                            color: isActive ? '#6D2932' : '#6B6460',
+                            background: isActive ? '#F5E6E8' : 'transparent',
+                            textDecoration: 'none',
+                            transition: 'all 0.18s ease',
+                            border: 'none',
+                        })}
+                        onMouseEnter={e => {
+                            if (!e.currentTarget.getAttribute('aria-current')) {
+                                e.currentTarget.style.background = '#F5E6E8';
+                                e.currentTarget.style.color = '#6D2932';
+                            }
+                        }}
+                        onMouseLeave={e => {
+                            if (!e.currentTarget.getAttribute('aria-current')) {
+                                e.currentTarget.style.background = 'transparent';
+                                e.currentTarget.style.color = '#6B6460';
+                            }
+                        }}
+                    >
+                        <span style={{ flexShrink: 0, opacity: 0.85 }}>{item.icon}</span>
+                        <span>{item.name}</span>
+                    </NavLink>
+                ))}
+            </nav>
+
+            {/* Footer / Storage */}
+            <div style={{ padding: '16px 16px 24px', borderTop: '1px solid #E8E2DC' }}>
+                <div style={{
+                    background: '#FAF7F4',
+                    borderRadius: 12,
+                    padding: '14px 16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 8,
+                }}>
+                    <div style={{ fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#6B6460' }}>
+                        Storage Used
                     </div>
-                    <p className="text-[10px] text-neutral-500">Your health data is safe.</p>
+                    <div style={{ height: 6, background: '#E8E2DC', borderRadius: 100, overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: '22%', background: '#6D2932', borderRadius: 100 }}></div>
+                    </div>
+                    <p style={{ fontSize: '0.72rem', color: '#6B6460', fontWeight: 500 }}>Your health data is safe.</p>
                 </div>
             </div>
         </aside>
