@@ -1,199 +1,488 @@
 import React, { useState } from 'react';
 import { useData } from '../../context/DataContext';
-import { Search, Filter, Calendar, MapPin, Clock, X, ChevronRight, Check } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Search, Filter, MapPin, X, Check, Calendar, Clock } from 'lucide-react';
 import { departments } from '../../data/mockData';
 
-const DoctorAvailability = () => {
-    const { doctors, bookAppointment } = useData();
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedDept, setSelectedDept] = useState('All');
-    const [selectedDoctor, setSelectedDoctor] = useState(null);
-    const [bookingData, setBookingData] = useState({ date: '', time: '', notes: '' });
-    const [bookingStep, setBookingStep] = useState(1); // 1: form, 2: success
+const FontLoader = () => (
+  <style>{`
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=Outfit:wght@700;800;900&display=swap');
+    :root {
+      --cream: #F7F3EC;
+      --warm: #EDE5D8;
+      --primary: #7B2D3E;
+      --primary-light: #A84458;
+      --primary-dark: #4E1A26;
+      --text: #1A1008;
+      --muted: #7A6A58;
+      --white: #FFFFFF;
+    }
 
-    const filteredDoctors = doctors.filter(doc => {
-        const matchesSearch = doc.name.toLowerCase().includes(searchTerm.toLowerCase()) || doc.specialty.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesDept = selectedDept === 'All' || doc.department === selectedDept;
-        return matchesSearch && matchesDept;
-    });
+    .da-page {
+      font-family: 'Outfit', sans-serif;
+      color: var(--text);
+      padding: 2.5rem;
+      max-width: 1200px;
+    }
 
-    const handleBook = (e) => {
-        e.preventDefault();
-        bookAppointment(selectedDoctor, `${bookingData.date}T${bookingData.time}`, bookingData.notes);
-        setBookingStep(2);
-        setTimeout(() => {
-            setSelectedDoctor(null);
-            setBookingStep(1);
-            setBookingData({ date: '', time: '', notes: '' });
-        }, 2500);
-    };
+    /* ── HEADER ── */
+    .da-header { margin-bottom: 2rem; }
+    .da-header h1 {
+      font-family: 'Sans-serif', serif;
+      font-size: 2.4rem; font-weight: 400;
+      color: var(--text); letter-spacing: -0.03em; margin-bottom: 0.3rem;
+    }
+    .da-header p { color: var(--muted); font-size: 0.95rem; }
 
-    return (
-        <div className="space-y-10">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                <div>
-                    <h1 className="text-4xl font-bold tracking-tight mb-2">Doctor Availability</h1>
-                    <p className="text-neutral-500 text-lg">Find and book appointments with our specialists</p>
-                </div>
-            </div>
+    /* ── FILTERS ── */
+    .filters-bar {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      background: var(--white);
+      border: 1px solid rgba(123,45,62,0.08);
+      border-radius: 20px; padding: 1.2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 16px rgba(26,16,8,0.05);
+    }
+    .search-wrap {
+      flex: 1; min-width: 260px; position: relative;
+    }
+    .search-wrap svg {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); pointer-events: none;
+    }
+    .search-input {
+      width: 100%; padding: 0.85rem 1rem 0.85rem 2.8rem;
+      background: var(--cream);
+      border: 1.5px solid transparent;
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem; color: var(--text); outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(123,45,62,0.08);
+    }
+    .search-input::placeholder { color: #C4B8A8; }
 
-            {/* Filters Bar */}
-            <div className="flex flex-wrap gap-4 p-6 bg-white rounded-3xl shadow-sm border border-neutral-100">
-                <div className="flex-1 min-w-[300px] relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
-                    <input
-                        type="text"
-                        placeholder="Search by name or specialty..."
-                        className="w-full pl-12 h-14 bg-neutral-50 rounded-2xl"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div>
-                <div className="w-full md:w-[250px] relative">
-                    <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
-                    <select
-                        className="w-full pl-12 h-14 bg-neutral-50 rounded-2xl appearance-none"
-                        value={selectedDept}
-                        onChange={(e) => setSelectedDept(e.target.value)}
-                    >
-                        <option value="All">All Departments</option>
-                        {departments.map(d => <option key={d} value={d}>{d}</option>)}
-                    </select>
-                </div>
-            </div>
+    .filter-select-wrap {
+      width: 220px; position: relative;
+    }
+    .filter-select-wrap svg {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); pointer-events: none;
+    }
+    .filter-select {
+      width: 100%; padding: 0.85rem 1rem 0.85rem 2.8rem;
+      background: var(--cream);
+      border: 1.5px solid transparent;
+      border-radius: 14px; appearance: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem; color: var(--text); outline: none;
+      transition: border-color 0.2s; cursor: pointer;
+    }
+    .filter-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(123,45,62,0.08);
+    }
 
-            {/* Grid of Doctors */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                {filteredDoctors.map((doc) => (
-                    <motion.div
-                        layout
-                        key={doc.id}
-                        className="card group hover:shadow-xl hover:-translate-y-1 transition-all p-0 overflow-hidden"
-                    >
-                        <div className={`h-3 ${doc.status === 'Available' ? 'bg-primary' : doc.status === 'Fully Booked' ? 'bg-orange-400' : 'bg-red-400'}`}></div>
-                        <div className="p-8 space-y-6">
-                            <div className="flex justify-between items-start">
-                                <div className="w-16 h-16 bg-neutral-100 rounded-2xl flex items-center justify-center text-primary-dark font-bold text-2xl group-hover:bg-primary-light transition-colors">
-                                    {doc.name.split(' ').map(n => n[0]).join('')}
-                                </div>
-                                <span className={`px-4 py-1.5 rounded-full text-xs font-bold ${doc.status === 'Available' ? 'bg-primary-light text-primary-dark' :
-                                        doc.status === 'Fully Booked' ? 'bg-orange-50 text-orange-600' : 'bg-red-50 text-red-600'
-                                    }`}>
-                                    {doc.status}
-                                </span>
-                            </div>
+    /* ── RESULTS COUNT ── */
+    .results-label {
+      font-size: 0.82rem; font-weight: 700;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 1.2rem;
+    }
 
-                            <div>
-                                <h3 className="text-xl font-bold mb-1 group-hover:text-primary transition-colors">{doc.name}</h3>
-                                <p className="text-sm text-neutral-500 font-medium">{doc.specialty}</p>
-                                <div className="flex items-center gap-2 mt-4 text-xs text-neutral-400 uppercase tracking-widest font-bold">
-                                    <MapPin size={14} className="text-primary" /> {doc.department}
-                                </div>
-                            </div>
+    /* ── DOCTORS GRID ── */
+    .doctors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.4rem;
+    }
 
-                            <div className="pt-6 border-t border-neutral-50">
-                                <button
-                                    disabled={doc.status !== 'Available'}
-                                    onClick={() => setSelectedDoctor(doc)}
-                                    className={`w-full btn ${doc.status === 'Available' ? 'btn-primary' : 'btn-secondary opacity-50 cursor-not-allowed'} justify-center`}
-                                >
-                                    Book Appointment
-                                </button>
-                            </div>
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
+    /* ── DOCTOR CARD ── */
+    .doc-card {
+      background: var(--white);
+      border-radius: 22px;
+      border: 1px solid rgba(123,45,62,0.07);
+      box-shadow: 0 2px 16px rgba(26,16,8,0.05);
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .doc-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 48px rgba(123,45,62,0.12);
+    }
+    .doc-card-top {
+      height: 5px;
+    }
+    .doc-card-top.available  { background: linear-gradient(to right, var(--primary), var(--primary-light)); }
+    .doc-card-top.booked     { background: linear-gradient(to right, #F97316, #FB923C); }
+    .doc-card-top.unavailable{ background: linear-gradient(to right, #EF4444, #F87171); }
 
-            {/* Booking Modal */}
-            <AnimatePresence>
-                {selectedDoctor && (
-                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-8">
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setSelectedDoctor(null)}
-                            className="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm"
-                        ></motion.div>
+    .doc-card-body { padding: 1.6rem; }
 
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden relative"
-                        >
-                            {bookingStep === 1 ? (
-                                <div className="p-10 space-y-8">
-                                    <div className="flex justify-between items-center">
-                                        <div>
-                                            <h2 className="text-2xl font-bold">Book Appointment</h2>
-                                            <p className="text-neutral-500">With {selectedDoctor.name}</p>
-                                        </div>
-                                        <button onClick={() => setSelectedDoctor(null)} className="p-2 hover:bg-neutral-100 rounded-xl transition-colors">
-                                            <X size={24} />
-                                        </button>
-                                    </div>
+    .doc-card-head {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; margin-bottom: 1.2rem;
+    }
+    .doc-avatar {
+      width: 58px; height: 58px; border-radius: 16px;
+      background: rgba(123,45,62,0.08);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-weight: 900;
+      color: var(--primary-dark);
+      transition: background 0.2s;
+    }
+    .doc-card:hover .doc-avatar { background: rgba(123,45,62,0.15); }
 
-                                    <form onSubmit={handleBook} className="space-y-6">
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="input-group">
-                                                <label className="text-sm font-bold text-neutral-700 mb-2 block uppercase tracking-wider">Date</label>
-                                                <div className="relative">
-                                                    <input
-                                                        type="date"
-                                                        required
-                                                        className="w-full h-14 bg-neutral-50 px-4 rounded-xl border border-neutral-100"
-                                                        value={bookingData.date}
-                                                        onChange={(e) => setBookingData({ ...bookingData, date: e.target.value })}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="input-group">
-                                                <label className="text-sm font-bold text-neutral-700 mb-2 block uppercase tracking-wider">Time</label>
-                                                <div className="relative">
-                                                    <input
-                                                        type="time"
-                                                        required
-                                                        className="w-full h-14 bg-neutral-50 px-4 rounded-xl border border-neutral-100"
-                                                        value={bookingData.time}
-                                                        onChange={(e) => setBookingData({ ...bookingData, time: e.target.value })}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
+    .status-pill {
+      padding: 0.35rem 0.85rem; border-radius: 50px;
+      font-size: 0.75rem; font-weight: 700;
+    }
+    .status-pill.available   { background: rgba(123,45,62,0.1); color: var(--primary-dark); }
+    .status-pill.booked      { background: #FFF7ED; color: #C2410C; }
+    .status-pill.unavailable { background: #FEF2F2; color: #B91C1C; }
 
-                                        <div className="input-group">
-                                            <label className="text-sm font-bold text-neutral-700 mb-2 block uppercase tracking-wider">Notes (Optional)</label>
-                                            <textarea
-                                                className="w-full p-4 h-32 bg-neutral-50 rounded-xl border border-neutral-100 resize-none"
-                                                placeholder="E.g. Symptoms, previous history..."
-                                                value={bookingData.notes}
-                                                onChange={(e) => setBookingData({ ...bookingData, notes: e.target.value })}
-                                            ></textarea>
-                                        </div>
+    .doc-name {
+      font-family: 'calibri', serif;
+      font-size: 1.15rem; font-weight: 900;
+      color: var(--text); margin-bottom: 3px;
+      transition: color 0.2s;
+    }
+    .doc-card:hover .doc-name { color: var(--primary); }
+    .doc-specialty { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
 
-                                        <button className="w-full btn btn-primary h-14 justify-center text-lg shadow-xl shadow-primary/20">
-                                            Confirm Booking
-                                        </button>
-                                    </form>
-                                </div>
-                            ) : (
-                                <div className="p-16 text-center space-y-6">
-                                    <div className="w-24 h-24 bg-primary-light text-primary rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-                                        <Check size={48} />
-                                    </div>
-                                    <h2 className="text-3xl font-bold">Booking Successful!</h2>
-                                    <p className="text-neutral-500">Your appointment request has been sent to the hospital for approval. You'll be notified soon.</p>
-                                </div>
-                            )}
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
+    .doc-dept {
+      display: inline-flex; align-items: center; gap: 5px;
+      margin-top: 0.8rem;
+      font-size: 0.75rem; font-weight: 700;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+    .doc-dept svg { color: var(--primary); }
+
+    .doc-card-footer {
+      border-top: 1px solid rgba(123,45,62,0.06);
+      padding-top: 1.2rem; margin-top: 1.2rem;
+    }
+    .btn-book {
+      width: 100%; padding: 0.8rem;
+      border-radius: 50px; border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem; font-weight: 700;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .btn-book.active {
+      background: var(--primary); color: #fff;
+      width: auto;
+      padding: 0.7rem 1.8rem;
+      align-self: flex-star;
+      box-shadow: 0 6px 20px rgba(123,45,62,0.28);
+    }
+    .btn-book.active:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(123,45,62,0.38);
+    }
+    .btn-book.disabled {
+      background: var(--warm); color: var(--muted);
+      cursor: not-allowed; opacity: 0.7;
+    }
+
+    /* ── MODAL OVERLAY ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(26,16,8,0.45);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal {
+      background: var(--white);
+      border-radius: 28px;
+      box-shadow: 0 30px 80px rgba(26,16,8,0.2);
+      width: 100%; max-width: 500px;
+      overflow: hidden;
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.97); } to { opacity: 1; transform: none; } }
+
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 2rem 2rem 0;
+    }
+    .modal-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem; font-weight: 900; color: var(--text);
+      margin-bottom: 3px;
+    }
+    .modal-header p { color: var(--muted); font-size: 0.88rem; }
+    .modal-close {
+      background: var(--cream); border: none; border-radius: 50%;
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--muted); flex-shrink: 0;
+      transition: background 0.2s, color 0.2s;
+    }
+    .modal-close:hover { background: rgba(123,45,62,0.1); color: var(--primary); }
+
+    .modal-doctor-row {
+      display: flex; align-items: center; gap: 12px;
+      margin: 1.4rem 2rem;
+      background: var(--cream); border-radius: 14px; padding: 1rem;
+    }
+    .modal-doc-avatar {
+      width: 46px; height: 46px; border-radius: 12px;
+      background: rgba(123,45,62,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem; font-weight: 900; color: var(--primary-dark);
+    }
+    .modal-doc-name { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+    .modal-doc-spec { font-size: 0.8rem; color: var(--muted); }
+
+    .modal-body { padding: 0 2rem 2rem; }
+
+    .mfield { margin-bottom: 1.2rem; }
+    .mfield label {
+      display: block; font-size: 0.75rem; font-weight: 700;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 6px;
+    }
+    .mfield input, .mfield textarea {
+      width: 100%; padding: 0.85rem 1rem;
+      background: var(--cream);
+      border: 1.5px solid transparent; border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem; color: var(--text); outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .mfield input:focus, .mfield textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(123,45,62,0.08);
+      background: var(--white);
+    }
+    .mfield textarea { resize: none; height: 100px; }
+
+    .mfields-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    .btn-confirm {
+      width: 100%; padding: 1rem;
+      background: var(--primary); color: #fff; border: none;
+      border-radius: 50px; font-family: 'DM Sans', sans-serif;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 8px 28px rgba(123,45,62,0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      margin-top: 0.5rem;
+    }
+    .btn-confirm:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(123,45,62,0.4); }
+
+    /* ── SUCCESS STATE ── */
+    .success-body {
+      padding: 3rem 2rem; text-align: center;
+    }
+    .success-icon {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: rgba(123,45,62,0.1); color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.5rem;
+      animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .success-body h2 {
+      font-family: 'calibri', serif;
+      font-size: 1.8rem; font-weight: 900; color: var(--text); margin-bottom: 0.7rem;
+    }
+    .success-body p { color: var(--muted); font-size: 0.92rem; line-height: 1.7; }
+  `}</style>
+);
+
+export default function DoctorAvailability() {
+  const { doctors, bookAppointment } = useData();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedDept, setSelectedDept] = useState('All');
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [bookingData, setBookingData] = useState({ date: '', time: '', notes: '' });
+  const [bookingStep, setBookingStep] = useState(1);
+
+  const filteredDoctors = doctors.filter(doc => {
+    const matchesSearch =
+      doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doc.specialty.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDept = selectedDept === 'All' || doc.department === selectedDept;
+    return matchesSearch && matchesDept;
+  });
+
+  const handleBook = (e) => {
+    e.preventDefault();
+    bookAppointment(selectedDoctor, `${bookingData.date}T${bookingData.time}`, bookingData.notes);
+    setBookingStep(2);
+    setTimeout(() => {
+      setSelectedDoctor(null);
+      setBookingStep(1);
+      setBookingData({ date: '', time: '', notes: '' });
+    }, 2500);
+  };
+
+  const statusClass = (status) => {
+    if (status === 'Available') return 'available';
+    if (status === 'Fully Booked') return 'booked';
+    return 'unavailable';
+  };
+
+  return (
+    <>
+      <FontLoader />
+      <div className="da-page">
+
+        {/* HEADER */}
+        <div className="da-header">
+          <h1>Doctor Availability</h1>
+          <p>Find and book appointments with our specialists</p>
         </div>
-    );
-};
 
-export default DoctorAvailability;
+        {/* FILTERS */}
+        <div className="filters-bar">
+          <div className="search-wrap">
+
+            <input
+              className="search-input"
+              type="text"
+              placeholder="Search by name or specialty..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className="filter-select-wrap">
+            <Filter size={17} />
+            <select
+              className="filter-select"
+              value={selectedDept}
+              onChange={(e) => setSelectedDept(e.target.value)}
+            >
+              <option value="All">All Departments</option>
+              {departments.map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
+          </div>
+        </div>
+
+        {/* RESULTS */}
+        <div className="results-label">{filteredDoctors.length} doctor{filteredDoctors.length !== 1 ? 's' : ''} found</div>
+
+        {/* GRID */}
+        <div className="doctors-grid">
+          {filteredDoctors.map((doc) => (
+            <div className="doc-card" key={doc.id}>
+              <div className={`doc-card-top ${statusClass(doc.status)}`} />
+              <div className="doc-card-body">
+                <div className="doc-card-head">
+                  <div className="doc-avatar">
+                    {doc.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                  </div>
+                  <span className={`status-pill ${statusClass(doc.status)}`}>
+                    {doc.status === 'Available' ? '● ' : '● '}{doc.status}
+                  </span>
+                </div>
+
+                <div className="doc-name">{doc.name}</div>
+                <div className="doc-specialty">{doc.specialty}</div>
+                <div className="doc-dept">
+                  <MapPin size={13} /> {doc.department}
+                </div>
+
+                <div className="doc-card-footer">
+                  <button
+                    className={`btn-book ${doc.status === 'Available' ? 'active' : 'disabled'}`}
+                    disabled={doc.status !== 'Available'}
+                    onClick={() => doc.status === 'Available' && setSelectedDoctor(doc)}
+                  >
+                    <Calendar size={15} />
+                    {doc.status === 'Available' ? 'Book Appointment' : doc.status}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* MODAL */}
+        {selectedDoctor && (
+          <div className="modal-overlay" onClick={() => setSelectedDoctor(null)}>
+            <div className="modal" onClick={(e) => e.stopPropagation()}>
+
+              {bookingStep === 1 ? (
+                <>
+                  <div className="modal-header">
+                    <div>
+                      <h2>Book Appointment</h2>
+                      <p>Fill in the details below to confirm</p>
+                    </div>
+                    <button className="modal-close" onClick={() => setSelectedDoctor(null)}>
+                      <X size={18} />
+                    </button>
+                  </div>
+
+                  <div className="modal-doctor-row">
+                    <div className="modal-doc-avatar">
+                      {selectedDoctor.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                    </div>
+                    <div>
+                      <div className="modal-doc-name">{selectedDoctor.name}</div>
+                      <div className="modal-doc-spec">{selectedDoctor.specialty} · {selectedDoctor.department}</div>
+                    </div>
+                  </div>
+
+                  <div className="modal-body">
+                    <form onSubmit={handleBook}>
+                      <div className="mfields-row">
+                        <div className="mfield">
+                          <label><Calendar size={12} style={{ display: 'inline', marginRight: 4 }} />Date</label>
+                          <input
+                            type="date" required
+                            value={bookingData.date}
+                            onChange={(e) => setBookingData({ ...bookingData, date: e.target.value })}
+                          />
+                        </div>
+                        <div className="mfield">
+                          <label><Clock size={12} style={{ display: 'inline', marginRight: 4 }} />Time</label>
+                          <input
+                            type="time" required
+                            value={bookingData.time}
+                            onChange={(e) => setBookingData({ ...bookingData, time: e.target.value })}
+                          />
+                        </div>
+                      </div>
+                      <div className="mfield">
+                        <label>Notes (Optional)</label>
+                        <textarea
+                          placeholder="E.g. symptoms, previous history..."
+                          value={bookingData.notes}
+                          onChange={(e) => setBookingData({ ...bookingData, notes: e.target.value })}
+                        />
+                      </div>
+                      <button type="submit" className="btn-confirm">
+                        <Check size={18} /> Confirm Booking
+                      </button>
+                    </form>
+                  </div>
+                </>
+              ) : (
+                <div className="success-body">
+                  <div className="success-icon"><Check size={36} /></div>
+                  <h2>Booking Successful!</h2>
+                  <p>Your appointment request has been sent to the hospital for approval. You'll be notified shortly.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+      </div>
+    </>
+  );
+}

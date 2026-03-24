@@ -1,167 +1,426 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useData } from '../../context/DataContext';
 import { User, Phone, Mail, Calendar, IdCard, Save, X, Edit2, ShieldCheck } from 'lucide-react';
-import { motion } from 'framer-motion';
 
-const Profile = () => {
-    const { user, updateProfile } = useAuth();
-    const [isEditing, setIsEditing] = useState(false);
-    const [formData, setFormData] = useState({ ...user });
-    const [saving, setSaving] = useState(false);
+const FontLoader = () => (
+  <style>{`
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=Outfit:wght@700;800;900&display=swap');
 
-    const handleSave = () => {
-        setSaving(true);
-        setTimeout(() => {
-            updateProfile(formData);
-            setSaving(false);
-            setIsEditing(false);
-        }, 1000);
-    };
+    :root {
+      --cream: #F7F3EC;
+      --warm: #EDE5D8;
+      --primary: #7B2D3E;
+      --primary-light: #A84458;
+      --primary-dark: #4E1A26;
+      --text: #1A1008;
+      --muted: #7A6A58;
+      --white: #FFFFFF;
+    }
 
-    const handleCancel = () => {
-        setFormData({ ...user });
-        setIsEditing(false);
-    };
+    .profile-page {
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      padding: 2.5rem;
+      max-width: 1100px;
+    }
 
-    return (
-        <div className="space-y-10">
-            <div className="flex justify-between items-end">
-                <div>
-                    <h1 className="text-4xl font-bold tracking-tight mb-2">My Profile</h1>
-                    <p className="text-neutral-500 text-lg">Manage your personal and security information</p>
-                </div>
-                {!isEditing ? (
-                    <button onClick={() => setIsEditing(true)} className="btn btn-primary shadow-xl shadow-primary/20">
-                        <Edit2 size={18} /> Edit Profile
-                    </button>
-                ) : (
-                    <div className="flex gap-3">
-                        <button onClick={handleCancel} className="btn btn-secondary border-neutral-200">
-                            <X size={18} /> Cancel
-                        </button>
-                        <button onClick={handleSave} disabled={saving} className="btn btn-primary">
-                            {saving ? (
-                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                            ) : (
-                                <><Save size={18} /> Save Changes</>
-                            )}
-                        </button>
-                    </div>
-                )}
-            </div>
+    .profile-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1.2rem;
+    }
+    .profile-header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.4rem; font-weight: 800;
+      color: var(--text); letter-spacing: -0.03em; margin-bottom: 0.3rem;
+    }
+    .profile-header p { color: var(--muted); font-size: 0.95rem; }
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Left Card: Summary */}
-                <div className="lg:col-span-1">
-                    <div className="card text-center flex flex-col items-center">
-                        <div className="w-32 h-32 bg-primary/10 rounded-[2.5rem] flex items-center justify-center text-primary mb-6 relative group overflow-hidden">
-                            <span className="text-4xl font-bold">{user?.fullName?.charAt(0)}</span>
-                            {isEditing && (
-                                <div className="absolute inset-0 bg-primary/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer text-white">
-                                    <Edit2 size={24} />
-                                </div>
-                            )}
-                        </div>
-                        <h3 className="text-2xl font-bold mb-1">{user?.fullName}</h3>
-                        <p className="text-neutral-400 font-medium mb-6">Patient Since March 2024</p>
-                        <div className="w-full flex items-center gap-3 p-4 bg-primary/5 rounded-2xl border border-primary/10">
-                            <ShieldCheck className="text-primary" size={20} />
-                            <div className="text-left">
-                                <div className="text-[10px] text-neutral-400 uppercase font-bold tracking-wider">Account Security</div>
-                                <div className="text-xs font-bold text-primary-dark">Verified Patient Account</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    .header-actions { display: flex; gap: 10px; }
 
-                {/* Right Card: Details */}
-                <div className="lg:col-span-2">
-                    <div className="card grid grid-cols-1 md:grid-cols-2 gap-8 shadow-sm">
-                        <ProfileField
-                            label="Full Name"
-                            value={formData.fullName}
-                            isEditing={isEditing}
-                            name="fullName"
-                            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                            icon={<User size={18} />}
-                        />
-                        <ProfileField
-                            label="Date of Birth"
-                            value={formData.dob}
-                            isEditing={isEditing}
-                            type="date"
-                            name="dob"
-                            onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
-                            icon={<Calendar size={18} />}
-                        />
-                        <ProfileField
-                            label="National ID"
-                            value={formData.nationalId}
-                            readOnly={true} // National ID usually fixed
-                            icon={<IdCard size={18} />}
-                        />
-                        <ProfileField
-                            label="Gender"
-                            value={formData.gender}
-                            isEditing={isEditing}
-                            type="select"
-                            options={["Male", "Female", "Other"]}
-                            name="gender"
-                            onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                            icon={<User size={18} />}
-                        />
-                        <ProfileField
-                            label="Phone Number"
-                            value={formData.phone}
-                            isEditing={isEditing}
-                            name="phone"
-                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            icon={<Phone size={18} />}
-                        />
-                        <ProfileField
-                            label="Email Address"
-                            value={formData.email}
-                            isEditing={isEditing}
-                            name="email"
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            icon={<Mail size={18} />}
-                        />
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0.7rem 1.4rem; border-radius: 50px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; border: none;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-edit {
+      background: var(--primary); color: #fff;
+      box-shadow: 0 6px 20px rgba(123,45,62,0.3);
+    }
+    .btn-edit:hover { box-shadow: 0 10px 28px rgba(123,45,62,0.4); }
+    .btn-save {
+      background: var(--primary); color: #fff;
+      box-shadow: 0 6px 20px rgba(123,45,62,0.25);
+    }
+    .btn-cancel {
+      background: var(--warm); color: var(--text);
+      border: 1.5px solid rgba(123,45,62,0.15);
+    }
+    .btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
 
-const ProfileField = ({ label, value, isEditing, readOnly, type = "text", name, onChange, icon, options }) => (
-    <div className="space-y-3">
-        <label className="text-sm font-bold text-neutral-700 uppercase tracking-wider flex items-center gap-2">
-            {icon} {label}
-        </label>
-        {isEditing && !readOnly ? (
-            type === "select" ? (
-                <select
-                    className="w-full h-14 bg-neutral-50 px-4 rounded-xl border border-neutral-100"
-                    value={value}
-                    onChange={onChange}
-                >
-                    {options.map(o => <option key={o} value={o}>{o}</option>)}
-                </select>
-            ) : (
-                <input
-                    type={type}
-                    className="w-full h-14 bg-neutral-50 px-4 rounded-xl border border-neutral-100"
-                    value={value}
-                    onChange={onChange}
-                />
-            )
-        ) : (
-            <div className={`p-4 rounded-xl bg-neutral-50/50 text-neutral-800 font-medium ${readOnly ? 'opacity-70 border-dashed border-2 border-neutral-200' : ''}`}>
-                {value}
-                {readOnly && <span className="ml-2 text-[10px] text-neutral-400">(Non-editable)</span>}
-            </div>
-        )}
-    </div>
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      .profile-grid { grid-template-columns: 1fr; }
+    }
+
+    .pcard {
+      background: var(--white);
+      border-radius: 24px;
+      border: 1px solid rgba(123,45,62,0.07);
+      box-shadow: 0 4px 24px rgba(26,16,8,0.06);
+      padding: 2rem;
+    }
+
+    .summary-card {
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+    }
+    .avatar-wrap {
+      width: 100px; height: 100px;
+      background: rgba(123,45,62,0.1);
+      border-radius: 28px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--primary);
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.6rem; font-weight: 900;
+      margin-bottom: 1.2rem;
+      position: relative; overflow: hidden;
+      border: 2px solid rgba(123,45,62,0.12);
+    }
+    .avatar-edit-overlay {
+      position: absolute; inset: 0;
+      background: rgba(123,45,62,0.5);
+      backdrop-filter: blur(2px);
+      display: flex; align-items: center; justify-content: center;
+      color: white; cursor: pointer;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .avatar-wrap:hover .avatar-edit-overlay { opacity: 1; }
+
+    .summary-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.4rem; font-weight: 800;
+      color: var(--text); margin-bottom: 0.3rem;
+    }
+    .summary-since {
+      font-size: 0.82rem; color: var(--muted);
+      font-weight: 500; margin-bottom: 1.4rem;
+    }
+
+    .divider-line {
+      width: 100%; height: 1px;
+      background: rgba(123,45,62,0.08);
+      margin: 0.5rem 0 1.2rem;
+    }
+
+    .verified-badge {
+      width: 100%;
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(123,45,62,0.05);
+      border: 1px solid rgba(123,45,62,0.1);
+      border-radius: 14px; padding: 0.9rem 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .verified-badge .badge-icon { color: var(--primary); flex-shrink: 0; }
+    .badge-label {
+      font-size: 0.7rem; font-weight: 700;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 2px;
+    }
+    .badge-value { font-size: 0.82rem; font-weight: 700; color: var(--primary-dark); }
+
+    .stats-row {
+      display: flex; gap: 0; width: 100%;
+      border-radius: 14px; overflow: hidden;
+      border: 1px solid rgba(123,45,62,0.1);
+      margin-top: 0.5rem;
+    }
+    .stat-item {
+      flex: 1; padding: 0.9rem 0.5rem;
+      text-align: center; background: var(--cream);
+    }
+    .stat-item + .stat-item {
+      border-left: 1px solid rgba(123,45,62,0.1);
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-weight: 900; color: var(--primary);
+    }
+    .stat-lbl {
+      font-size: 0.7rem; color: var(--muted);
+      font-weight: 600; margin-top: 2px;
+    }
+
+    .fields-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.8rem;
+    }
+    .fields-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.3rem; font-weight: 800; color: var(--text);
+    }
+    .fields-header p { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+    .editing-badge {
+      background: rgba(123,45,62,0.08); color: var(--primary);
+      border: 1px solid rgba(123,45,62,0.2);
+      padding: 0.3rem 0.8rem; border-radius: 50px;
+      font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+
+    .fields-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.4rem;
+    }
+    @media (max-width: 600px) {
+      .fields-grid { grid-template-columns: 1fr; }
+    }
+
+    .field-wrap { display: flex; flex-direction: column; gap: 6px; }
+    .field-label {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.75rem; font-weight: 700;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .field-label svg { color: var(--primary); flex-shrink: 0; }
+
+    .field-value {
+      padding: 0.85rem 1rem;
+      background: var(--cream);
+      border-radius: 12px;
+      font-size: 0.95rem; font-weight: 600;
+      color: var(--text);
+      border: 1.5px solid transparent;
+      min-height: 48px;
+    }
+    .field-value.readonly {
+      opacity: 0.7;
+      border: 1.5px dashed rgba(123,45,62,0.2);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .readonly-tag {
+      font-size: 0.68rem; font-weight: 700;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.05em; background: var(--warm);
+      padding: 2px 8px; border-radius: 50px;
+    }
+    .field-input, .field-select {
+      padding: 0.85rem 1rem;
+      background: var(--white);
+      border: 1.5px solid rgba(123,45,62,0.2);
+      border-radius: 12px;
+      font-size: 0.95rem; font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text); outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    .field-input:focus, .field-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(123,45,62,0.08);
+    }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  `}</style>
 );
 
-export default Profile;
+const ProfileField = ({ label, value, isEditing, readOnly, type = 'text', onChange, icon, options }) => (
+  <div className="field-wrap">
+    <div className="field-label">{icon}{label}</div>
+    {isEditing && !readOnly ? (
+      type === 'select' ? (
+        <select className="field-select" value={value || ''} onChange={onChange}>
+          {options.map(o => <option key={o} value={o}>{o}</option>)}
+        </select>
+      ) : (
+        <input
+          type={type}
+          className="field-input"
+          value={value || ''}
+          onChange={onChange}
+          placeholder={`Enter ${label.toLowerCase()}`}
+        />
+      )
+    ) : (
+      <div className={`field-value ${readOnly ? 'readonly' : ''}`}>
+        <span>{value || <span style={{ color: '#C4B8A8' }}>Not set</span>}</span>
+        {readOnly && <span className="readonly-tag">Locked</span>}
+      </div>
+    )}
+  </div>
+);
+
+export default function Profile() {
+  const { user, updateProfile } = useAuth();
+  const { appointments } = useData();
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({ ...user });
+  const [saving, setSaving] = useState(false);
+
+  const totalAppointments = appointments.length;
+  const upcomingAppointments = appointments.filter(
+    a => a.type === 'Upcoming'
+  ).length;
+
+  const getRoleLabel = () => {
+    if (user?.role === 'admin') return 'Administrator Account';
+    if (user?.role === 'doctor') return 'Verified Doctor Account';
+    return 'Verified Patient Account';
+  };
+
+  const handleSave = () => {
+    setSaving(true);
+    setTimeout(() => {
+      updateProfile(formData);
+      setSaving(false);
+      setIsEditing(false);
+    }, 1000);
+  };
+
+  const handleCancel = () => {
+    setFormData({ ...user });
+    setIsEditing(false);
+  };
+
+  return (
+    <>
+      <FontLoader />
+      <div className="profile-page">
+
+        {/* HEADER */}
+        <div className="profile-header">
+          <div>
+            <h1>My Profile</h1>
+            <p>Manage your personal information</p>
+          </div>
+          <div className="header-actions">
+            {!isEditing ? (
+              <button onClick={() => setIsEditing(true)} className="btn btn-edit">
+                <Edit2 size={16} /> Edit Profile
+              </button>
+            ) : (
+              <>
+                <button onClick={handleCancel} className="btn btn-cancel">
+                  <X size={16} /> Cancel
+                </button>
+                <button onClick={handleSave} disabled={saving} className="btn btn-save">
+                  {saving
+                    ? <><div className="spinner" /> Saving...</>
+                    : <><Save size={16} /> Save Changes</>
+                  }
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* GRID */}
+        <div className="profile-grid">
+
+          {/* ── LEFT — Summary Card ── */}
+          <div className="pcard summary-card">
+
+            <div className="avatar-wrap">
+              {user?.fullName?.charAt(0).toUpperCase()}
+              {isEditing && (
+                <div className="avatar-edit-overlay">
+                  <Edit2 size={20} />
+                </div>
+              )}
+            </div>
+
+            <div className="summary-name">{user?.fullName || 'Patient'}</div>
+            <div className="summary-since">
+              Member Since {new Date().getFullYear()}
+            </div>
+
+            <div className="divider-line" />
+
+            {/* Verified Badge */}
+            <div className="verified-badge">
+              <ShieldCheck className="badge-icon" size={20} />
+              <div>
+                <div className="badge-label">Account Security</div>
+                <div className="badge-value">{getRoleLabel()}</div>
+              </div>
+            </div>
+
+            {/* Real Stats */}
+            <div className="stats-row">
+              <div className="stat-item">
+                <div className="stat-num">{totalAppointments}</div>
+                <div className="stat-lbl">Appointments</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-num">{upcomingAppointments}</div>
+                <div className="stat-lbl">Upcoming</div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* ── RIGHT — Personal Information Card ── */}
+          <div className="pcard">
+            <div className="fields-header">
+              <div>
+                <h2>Personal Information</h2>
+                <p>Your details as registered in the system</p>
+              </div>
+              {isEditing && <span className="editing-badge">✏ Editing</span>}
+            </div>
+
+            <div className="fields-grid">
+              <ProfileField
+                label="Full Name" value={formData.fullName}
+                isEditing={isEditing} icon={<User size={14} />}
+                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+              />
+              <ProfileField
+                label="Date of Birth" value={formData.dob}
+                isEditing={isEditing} type="date" icon={<Calendar size={14} />}
+                onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+              />
+              <ProfileField
+                label="National ID" value={formData.nationalId}
+                readOnly icon={<IdCard size={14} />}
+              />
+              <ProfileField
+                label="Gender" value={formData.gender}
+                isEditing={isEditing} type="select"
+                options={['Male', 'Female', 'Other']} icon={<User size={14} />}
+                onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+              />
+              <ProfileField
+                label="Phone Number" value={formData.phone}
+                isEditing={isEditing} icon={<Phone size={14} />}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              />
+              <ProfileField
+                label="Email Address" value={formData.email}
+                isEditing={isEditing} icon={<Mail size={14} />}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              />
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </>
+  );
+}

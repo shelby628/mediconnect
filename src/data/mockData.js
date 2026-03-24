@@ -10,12 +10,12 @@ export const specialties = [
 ];
 
 export const initialDoctors = [
-  { id: 1, name: "Dr. Sarah Johnson", department: "Cardiology", specialty: "Interventional Cardiologist", status: "Available" },
-  { id: 2, name: "Dr. Michael Chen", department: "Neurology", specialty: "Stroke Specialist", status: "Fully Booked" },
+  { id: 1, name: "Dr. Galavo Mumbi", department: "Cardiology", specialty: "Interventional Cardiologist", status: "Available" },
+  { id: 2, name: "Dr. Lynette Wanjiku", department: "Neurology", specialty: "Stroke Specialist", status: "Fully Booked" },
   { id: 3, name: "Dr. Emily Davis", department: "Pediatrics", specialty: "Child Psychologist", status: "Available" },
-  { id: 4, name: "Dr. Robert Wilson", department: "Orthopedics", specialty: "Knee Surgeon", status: "Unavailable" },
-  { id: 5, name: "Dr. Linda Garcia", department: "General Medicine", specialty: "Internist", status: "Available" },
-  { id: 6, name: "Dr. James Miller", department: "Dermatology", specialty: "Cosmetic Dermatologist", status: "Available" },
+  { id: 4, name: "Dr. Christina Atieno", department: "Orthopedics", specialty: "Knee Surgeon", status: "Unavailable" },
+  { id: 5, name: "Dr. Meredith Grey", department: "General Medicine", specialty: "Internist", status: "Available" },
+  { id: 6, name: "Dr. Cliff Miller", department: "Dermatology", specialty: "Cosmetic Dermatologist", status: "Available" },
   { id: 7, name: "Dr. David Brown", department: "Cardiology", specialty: "Heart Surgeon", status: "Available" },
   { id: 8, name: "Dr. Patricia Moore", department: "Pediatrics", specialty: "Neonatologist", status: "Available" }
 ];
@@ -31,6 +31,6 @@ export const initialConsultations = [
 ];
 
 export const initialTickets = [
-  { id: "TKT-001", subject: "Portal Login Issue", type: "Technical", status: "Resolved", message: "I couldn't login yesterday.", date: "2024-03-01" },
-  { id: "TKT-002", subject: "Appointment Rescheduling", type: "Appointment", status: "Pending", message: "I need to move my appointment.", date: "2024-03-05" }
+  { id: "TKT-001", subject: "Portal Login Issue", type: "Technical", status: "Resolved", message: "I couldn't login yesterday.", date: "2026-03-01" },
+  { id: "TKT-002", subject: "Appointment Rescheduling", type: "Appointment", status: "Pending", message: "I need to move my appointment.", date: "2026-03-05" }
 ];

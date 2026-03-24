@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, User as UserIcon, LogOut, ChevronDown } from 'lucide-react';
+import { Bell, User as UserIcon, LogOut, ChevronDown, Sun, Moon, Sunset } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,15 +7,25 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
     const { user, logout } = useAuth();
-    const { notifications, markRead } = useData();
+    const { notifications, markRead, markAllRead } = useData();
     const [showNotifs, setShowNotifs] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
 
     const unreadCount = notifications.filter(n => !n.read).length;
 
+    // ── Greeting based on time of day ──
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return { text: 'Good morning', icon: <Sun size={16} /> };
+        if (hour < 17) return { text: 'Good afternoon', icon: <Sunset size={16} /> };
+        return { text: 'Good evening', icon: <Moon size={16} /> };
+    };
+
+    const greeting = getGreeting();
+
     return (
         <header style={{
-            height: 72,
+            height: 80,
             background: '#ffffff',
             borderBottom: '1px solid #E8E2DC',
             display: 'flex',
@@ -29,23 +39,76 @@ const Header = () => {
             gap: 20,
         }}>
 
-            {/* Left — Welcome */}
+            {/* ── Left — Welcome ── */}
+            {/* ── Left — Welcome ── */}
             <div style={{ flex: 1 }}>
-                <h2 style={{
-                    fontSize: '1.05rem',
-                    fontWeight: 700,
-                    color: '#6B6460',
-                    whiteSpace: 'nowrap',
-                    margin: 0,
+
+                {/* Greeting row */}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    marginBottom: 4,
                 }}>
-                    Welcome,{' '}
-                    <span style={{ color: '#6D2932', fontWeight: 800 }}>
-                        {user?.fullName?.split(' ')[0]}
+                    <span style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 5,
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        color: '#9A8A7A',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em',
+                    }}>
+                        {greeting.icon}
+                        {greeting.text}
                     </span>
-                </h2>
+                </div>
+
+                {/* Name + Date row */}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    flexWrap: 'wrap',
+                }}>
+                    <h2 style={{
+                        fontSize: '1.15rem',
+                        fontWeight: 800,
+                        color: '#1A1008',
+                        margin: 0,
+                        whiteSpace: 'nowrap',
+                        letterSpacing: '-0.02em',
+                    }}>
+                        {user?.fullName?.split(' ')[0]}
+                        <span style={{ color: '#6D2932' }}>.</span>
+                    </h2>
+
+                    {/* Role badge */}
+                    <span style={{
+                        background: 'rgba(109,41,50,0.08)',
+                        color: '#6D2932',
+                        border: '1px solid rgba(109,41,50,0.15)',
+                        padding: '2px 10px',
+                        borderRadius: 50,
+                        fontSize: '0.7rem',
+                        fontWeight: 700,
+                        textTransform: 'capitalize',
+                        letterSpacing: '0.04em',
+                    }}>
+                        {user?.role}
+                    </span>
+
+
+
+                </div>
+
             </div>
 
-            {/* Right — Bell + Profile */}
+
+
+
+            {/* ── Right — Bell + Profile ── */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
 
                 {/* Bell */}
@@ -107,10 +170,37 @@ const Header = () => {
                                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                                     background: '#FAF7F4',
                                 }}>
-                                    <span style={{ fontWeight: 800, fontSize: '0.875rem' }}>Notifications</span>
-                                    <span style={{ fontSize: '0.75rem', color: '#6D2932', fontWeight: 700, cursor: 'pointer' }}>
-                                        Mark all as read
-                                    </span>
+                                    <div>
+                                        <span style={{ fontWeight: 800, fontSize: '0.875rem' }}>
+                                            Notifications
+                                        </span>
+                                        {unreadCount > 0 && (
+                                            <span style={{
+                                                marginLeft: 8,
+                                                background: '#6D2932',
+                                                color: 'white',
+                                                fontSize: '0.65rem',
+                                                fontWeight: 800,
+                                                padding: '1px 7px',
+                                                borderRadius: 50,
+                                            }}>
+                                                {unreadCount} new
+                                            </span>
+                                        )}
+                                    </div>
+                                    {unreadCount > 0 && (
+                                        <span
+                                            onClick={markAllRead}
+                                            style={{
+                                                fontSize: '0.75rem',
+                                                color: '#6D2932',
+                                                fontWeight: 700,
+                                                cursor: 'pointer',
+                                            }}
+                                        >
+                                            Mark all read
+                                        </span>
+                                    )}
                                 </div>
                                 <div style={{ maxHeight: 360, overflowY: 'auto' }}>
                                     {notifications.length > 0 ? notifications.map(notif => (
@@ -122,15 +212,46 @@ const Header = () => {
                                                 borderBottom: '1px solid #F4F0EB',
                                                 cursor: 'pointer',
                                                 background: !notif.read ? '#FDF5F6' : 'white',
+                                                transition: 'background 0.15s',
                                             }}
+                                            onMouseEnter={e => e.currentTarget.style.background = '#FAF7F4'}
+                                            onMouseLeave={e => e.currentTarget.style.background = !notif.read ? '#FDF5F6' : 'white'}
                                         >
-                                            <div style={{ fontSize: '0.875rem', fontWeight: 700, marginBottom: 4 }}>{notif.title}</div>
-                                            <div style={{ fontSize: '0.78rem', color: '#6B6460' }}>{notif.message}</div>
-                                            <div style={{ fontSize: '0.7rem', color: '#aaa', marginTop: 6 }}>{notif.date}</div>
+                                            <div style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'flex-start',
+                                                marginBottom: 4,
+                                            }}>
+                                                <span style={{ fontSize: '0.875rem', fontWeight: 700 }}>
+                                                    {notif.title}
+                                                </span>
+                                                {!notif.read && (
+                                                    <span style={{
+                                                        width: 7, height: 7,
+                                                        borderRadius: '50%',
+                                                        background: '#6D2932',
+                                                        flexShrink: 0,
+                                                        marginTop: 4,
+                                                    }} />
+                                                )}
+                                            </div>
+                                            <div style={{ fontSize: '0.78rem', color: '#6B6460' }}>
+                                                {notif.message}
+                                            </div>
+                                            <div style={{ fontSize: '0.7rem', color: '#aaa', marginTop: 6 }}>
+                                                {notif.date}
+                                            </div>
                                         </div>
                                     )) : (
-                                        <div style={{ padding: '32px 16px', textAlign: 'center', color: '#aaa', fontSize: '0.875rem' }}>
-                                            No notifications yet.
+                                        <div style={{
+                                            padding: '40px 16px',
+                                            textAlign: 'center',
+                                            color: '#aaa',
+                                            fontSize: '0.875rem',
+                                        }}>
+                                            <Bell size={28} style={{ opacity: 0.2, marginBottom: 8 }} />
+                                            <div>No notifications yet</div>
                                         </div>
                                     )}
                                 </div>
@@ -152,26 +273,42 @@ const Header = () => {
                             cursor: 'pointer',
                             transition: 'background 0.2s, border-color 0.2s',
                         }}
-                        onMouseEnter={e => { e.currentTarget.style.background = '#FAF7F4'; e.currentTarget.style.borderColor = '#c8c0b8'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.borderColor = '#E8E2DC'; }}
+                        onMouseEnter={e => {
+                            e.currentTarget.style.background = '#FAF7F4';
+                            e.currentTarget.style.borderColor = '#c8c0b8';
+                        }}
+                        onMouseLeave={e => {
+                            e.currentTarget.style.background = 'white';
+                            e.currentTarget.style.borderColor = '#E8E2DC';
+                        }}
                     >
                         <div style={{
                             width: 36, height: 36,
-                            background: '#F5E6E8',
+                            background: 'linear-gradient(135deg, #F5E6E8, #EDD5D8)',
                             borderRadius: 10,
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             color: '#6D2932',
                             fontWeight: 800,
                             fontSize: '0.95rem',
                             flexShrink: 0,
+                            border: '1.5px solid rgba(109,41,50,0.15)',
                         }}>
                             {user?.fullName?.charAt(0)}
                         </div>
                         <div style={{ textAlign: 'left' }}>
-                            <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#1A1310', lineHeight: 1.2 }}>
-                                {user?.fullName}
+                            <div style={{
+                                fontSize: '0.82rem',
+                                fontWeight: 700,
+                                color: '#1A1310',
+                                lineHeight: 1.2,
+                            }}>
+                                {user?.fullName?.split(' ')[0]}
                             </div>
-                            <div style={{ fontSize: '0.72rem', color: '#6B6460', textTransform: 'capitalize' }}>
+                            <div style={{
+                                fontSize: '0.72rem',
+                                color: '#6B6460',
+                                textTransform: 'capitalize',
+                            }}>
                                 {user?.role}
                             </div>
                         </div>
@@ -193,7 +330,7 @@ const Header = () => {
                                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                 style={{
                                     position: 'absolute', right: 0, top: 52,
-                                    width: 190,
+                                    width: 200,
                                     background: 'white',
                                     borderRadius: 14,
                                     boxShadow: '0 16px 40px rgba(0,0,0,0.12)',
@@ -203,8 +340,31 @@ const Header = () => {
                                     padding: '6px',
                                 }}
                             >
+                                {/* User info in dropdown */}
+                                <div style={{
+                                    padding: '10px 12px 12px',
+                                    borderBottom: '1px solid #E8E2DC',
+                                    marginBottom: 4,
+                                }}>
+                                    <div style={{
+                                        fontSize: '0.82rem',
+                                        fontWeight: 700,
+                                        color: '#1A1310',
+                                    }}>
+                                        {user?.fullName}
+                                    </div>
+                                    <div style={{
+                                        fontSize: '0.72rem',
+                                        color: '#9A8A7A',
+                                        marginTop: 2,
+                                    }}>
+                                        ID: {user?.nationalId}
+                                    </div>
+                                </div>
+
                                 <Link
                                     to="/dashboard/profile"
+                                    onClick={() => setShowProfile(false)}
                                     style={{
                                         display: 'flex', alignItems: 'center', gap: 10,
                                         padding: '10px 12px',
@@ -219,7 +379,9 @@ const Header = () => {
                                 >
                                     <UserIcon size={16} /> View Profile
                                 </Link>
+
                                 <div style={{ height: 1, background: '#E8E2DC', margin: '4px 0' }} />
+
                                 <button
                                     onClick={logout}
                                     style={{

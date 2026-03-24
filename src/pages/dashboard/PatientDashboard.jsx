@@ -6,7 +6,7 @@ import Profile from './Profile';
 import DoctorAvailability from './DoctorAvailability';
 import Appointments from './Appointments';
 import Consultation from './Consultation';
-import CustomerCare from './CustomerCare';
+import Support from './Support';
 import About from './About';
 import { motion } from 'framer-motion';
 
@@ -28,7 +28,7 @@ const PatientDashboard = () => {
                             <Route path="doctors" element={<DoctorAvailability />} />
                             <Route path="appointments" element={<Appointments />} />
                             <Route path="consultation" element={<Consultation />} />
-                            <Route path="support" element={<CustomerCare />} />
+                            <Route path="support" element={<Support />} />
                             <Route path="about" element={<About />} />
                             <Route path="/" element={<Navigate to="doctors" replace />} />
                         </Routes>
