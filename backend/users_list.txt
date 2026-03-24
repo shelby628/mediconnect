@@ -1,8 +1,0 @@
---- USERS ---
-Username: 78797390, Email: None, is_staff: False, is_superuser: False
-Username: 42699992, Email: None, is_staff: False, is_superuser: False
-Username: 7879737879, Email: None, is_staff: False, is_superuser: False
-Username: 4269999288, Email: None, is_staff: False, is_superuser: False
-Username: 12345678, Email: None, is_staff: False, is_superuser: False
-Username: employee1, Email: , is_staff: False, is_superuser: False
--------------
