@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
-const API_URL = https://mediconnect-pa9z.onrender.com;
+const API_URL = 'https://mediconnect-pa9z.onrender.com/api';
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
