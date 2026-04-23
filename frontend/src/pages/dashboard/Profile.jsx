@@ -35,7 +35,6 @@ const FontLoader = () => (
       color: var(--text); letter-spacing: -0.03em; margin-bottom: 0.3rem;
     }
     .profile-header p { color: var(--muted); font-size: 0.95rem; }
-
     .header-actions { display: flex; gap: 10px; }
 
     .btn {
@@ -47,126 +46,63 @@ const FontLoader = () => (
       transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
     }
     .btn:hover { transform: translateY(-2px); }
-    .btn-edit {
-      background: var(--primary); color: #fff;
-      box-shadow: 0 6px 20px rgba(123,45,62,0.3);
-    }
+    .btn-edit { background: var(--primary); color: #fff; box-shadow: 0 6px 20px rgba(123,45,62,0.3); }
     .btn-edit:hover { box-shadow: 0 10px 28px rgba(123,45,62,0.4); }
-    .btn-save {
-      background: var(--primary); color: #fff;
-      box-shadow: 0 6px 20px rgba(123,45,62,0.25);
-    }
-    .btn-cancel {
-      background: var(--warm); color: var(--text);
-      border: 1.5px solid rgba(123,45,62,0.15);
-    }
+    .btn-save { background: var(--primary); color: #fff; box-shadow: 0 6px 20px rgba(123,45,62,0.25); }
+    .btn-cancel { background: var(--warm); color: var(--text); border: 1.5px solid rgba(123,45,62,0.15); }
     .btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
 
-    .profile-grid {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 1.5rem;
-    }
-    @media (max-width: 900px) {
-      .profile-grid { grid-template-columns: 1fr; }
-    }
+    .profile-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem; }
+    @media (max-width: 900px) { .profile-grid { grid-template-columns: 1fr; } }
 
     .pcard {
-      background: var(--white);
-      border-radius: 24px;
+      background: var(--white); border-radius: 24px;
       border: 1px solid rgba(123,45,62,0.07);
       box-shadow: 0 4px 24px rgba(26,16,8,0.06);
       padding: 2rem;
     }
 
-    .summary-card {
-      display: flex; flex-direction: column;
-      align-items: center; text-align: center;
-    }
+    .summary-card { display: flex; flex-direction: column; align-items: center; text-align: center; }
     .avatar-wrap {
       width: 100px; height: 100px;
-      background: rgba(123,45,62,0.1);
-      border-radius: 28px;
+      background: rgba(123,45,62,0.1); border-radius: 28px;
       display: flex; align-items: center; justify-content: center;
-      color: var(--primary);
-      font-family: 'Outfit', sans-serif;
+      color: var(--primary); font-family: 'Outfit', sans-serif;
       font-size: 2.6rem; font-weight: 900;
-      margin-bottom: 1.2rem;
-      position: relative; overflow: hidden;
+      margin-bottom: 1.2rem; position: relative; overflow: hidden;
       border: 2px solid rgba(123,45,62,0.12);
     }
     .avatar-edit-overlay {
-      position: absolute; inset: 0;
-      background: rgba(123,45,62,0.5);
-      backdrop-filter: blur(2px);
-      display: flex; align-items: center; justify-content: center;
-      color: white; cursor: pointer;
-      opacity: 0; transition: opacity 0.2s;
+      position: absolute; inset: 0; background: rgba(123,45,62,0.5);
+      backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center;
+      color: white; cursor: pointer; opacity: 0; transition: opacity 0.2s;
     }
     .avatar-wrap:hover .avatar-edit-overlay { opacity: 1; }
 
     .summary-name {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.4rem; font-weight: 800;
-      color: var(--text); margin-bottom: 0.3rem;
+      font-size: 1.4rem; font-weight: 800; color: var(--text); margin-bottom: 0.3rem;
     }
-    .summary-since {
-      font-size: 0.82rem; color: var(--muted);
-      font-weight: 500; margin-bottom: 1.4rem;
-    }
-
-    .divider-line {
-      width: 100%; height: 1px;
-      background: rgba(123,45,62,0.08);
-      margin: 0.5rem 0 1.2rem;
-    }
+    .summary-since { font-size: 0.82rem; color: var(--muted); font-weight: 500; margin-bottom: 1.4rem; }
+    .divider-line { width: 100%; height: 1px; background: rgba(123,45,62,0.08); margin: 0.5rem 0 1.2rem; }
 
     .verified-badge {
-      width: 100%;
-      display: flex; align-items: center; gap: 12px;
-      background: rgba(123,45,62,0.05);
-      border: 1px solid rgba(123,45,62,0.1);
-      border-radius: 14px; padding: 0.9rem 1rem;
-      margin-bottom: 1.2rem;
+      width: 100%; display: flex; align-items: center; gap: 12px;
+      background: rgba(123,45,62,0.05); border: 1px solid rgba(123,45,62,0.1);
+      border-radius: 14px; padding: 0.9rem 1rem; margin-bottom: 1.2rem;
     }
     .verified-badge .badge-icon { color: var(--primary); flex-shrink: 0; }
-    .badge-label {
-      font-size: 0.7rem; font-weight: 700;
-      color: var(--muted); text-transform: uppercase;
-      letter-spacing: 0.08em; margin-bottom: 2px;
-    }
+    .badge-label { font-size: 0.7rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
     .badge-value { font-size: 0.82rem; font-weight: 700; color: var(--primary-dark); }
 
-    .stats-row {
-      display: flex; gap: 0; width: 100%;
-      border-radius: 14px; overflow: hidden;
-      border: 1px solid rgba(123,45,62,0.1);
-      margin-top: 0.5rem;
-    }
-    .stat-item {
-      flex: 1; padding: 0.9rem 0.5rem;
-      text-align: center; background: var(--cream);
-    }
-    .stat-item + .stat-item {
-      border-left: 1px solid rgba(123,45,62,0.1);
-    }
-    .stat-num {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem; font-weight: 900; color: var(--primary);
-    }
-    .stat-lbl {
-      font-size: 0.7rem; color: var(--muted);
-      font-weight: 600; margin-top: 2px;
-    }
+    .stats-row { display: flex; gap: 0; width: 100%; border-radius: 14px; overflow: hidden; border: 1px solid rgba(123,45,62,0.1); margin-top: 0.5rem; }
+    .stat-item { flex: 1; padding: 0.9rem 0.5rem; text-align: center; background: var(--cream); }
+    .stat-item + .stat-item { border-left: 1px solid rgba(123,45,62,0.1); }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 900; color: var(--primary); }
+    .stat-lbl { font-size: 0.7rem; color: var(--muted); font-weight: 600; margin-top: 2px; }
 
-    .fields-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 1.8rem;
-    }
-    .fields-header h2 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.3rem; font-weight: 800; color: var(--text);
-    }
+    .fields-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.8rem; }
+    .fields-header h2 { font-family: 'Outfit', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--text); }
     .fields-header p { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
     .editing-badge {
       background: rgba(123,45,62,0.08); color: var(--primary);
@@ -176,58 +112,36 @@ const FontLoader = () => (
       text-transform: uppercase; letter-spacing: 0.06em;
     }
 
-    .fields-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.4rem;
-    }
-    @media (max-width: 600px) {
-      .fields-grid { grid-template-columns: 1fr; }
-    }
+    .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+    @media (max-width: 600px) { .fields-grid { grid-template-columns: 1fr; } }
 
     .field-wrap { display: flex; flex-direction: column; gap: 6px; }
-    .field-label {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 0.75rem; font-weight: 700;
-      color: var(--muted); text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
+    .field-label { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
     .field-label svg { color: var(--primary); flex-shrink: 0; }
 
     .field-value {
-      padding: 0.85rem 1rem;
-      background: var(--cream);
-      border-radius: 12px;
-      font-size: 0.95rem; font-weight: 600;
-      color: var(--text);
-      border: 1.5px solid transparent;
-      min-height: 48px;
+      padding: 0.85rem 1rem; background: var(--cream); border-radius: 12px;
+      font-size: 0.95rem; font-weight: 600; color: var(--text);
+      border: 1.5px solid transparent; min-height: 48px;
     }
     .field-value.readonly {
-      opacity: 0.7;
-      border: 1.5px dashed rgba(123,45,62,0.2);
+      opacity: 0.7; border: 1.5px dashed rgba(123,45,62,0.2);
       display: flex; align-items: center; justify-content: space-between;
     }
     .readonly-tag {
-      font-size: 0.68rem; font-weight: 700;
-      color: var(--muted); text-transform: uppercase;
-      letter-spacing: 0.05em; background: var(--warm);
-      padding: 2px 8px; border-radius: 50px;
+      font-size: 0.68rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.05em;
+      background: var(--warm); padding: 2px 8px; border-radius: 50px;
     }
     .field-input, .field-select {
-      padding: 0.85rem 1rem;
-      background: var(--white);
-      border: 1.5px solid rgba(123,45,62,0.2);
-      border-radius: 12px;
+      padding: 0.85rem 1rem; background: var(--white);
+      border: 1.5px solid rgba(123,45,62,0.2); border-radius: 12px;
       font-size: 0.95rem; font-weight: 500;
-      font-family: 'DM Sans', sans-serif;
-      color: var(--text); outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      width: 100%;
+      font-family: 'DM Sans', sans-serif; color: var(--text); outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
     }
     .field-input:focus, .field-select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(123,45,62,0.08);
+      border-color: var(--primary); box-shadow: 0 0 0 4px rgba(123,45,62,0.08);
     }
 
     .spinner {
@@ -270,12 +184,23 @@ export default function Profile() {
   const { user, updateProfile } = useAuth();
   const { appointments } = useData();
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({ ...user });
   const [saving, setSaving] = useState(false);
+
+  // ✅ Use full_name (backend key) with fallback to fullName (legacy)
+  const displayName = user?.full_name || user?.fullName || '';
+
+  const [formData, setFormData] = useState({
+    full_name: user?.full_name || user?.fullName || '',
+    dob: user?.dob || '',
+    gender: user?.gender || '',
+    phone: user?.phone || '',
+    email: user?.email || '',
+    national_id: user?.national_id || user?.nationalId || '',
+  });
 
   const totalAppointments = appointments.length;
   const upcomingAppointments = appointments.filter(
-    a => a.type === 'Upcoming'
+    a => a.status === 'Pending' || a.status === 'Approved'
   ).length;
 
   const getRoleLabel = () => {
@@ -287,6 +212,7 @@ export default function Profile() {
   const handleSave = () => {
     setSaving(true);
     setTimeout(() => {
+      // ✅ Save with full_name key so it persists correctly in localStorage
       updateProfile(formData);
       setSaving(false);
       setIsEditing(false);
@@ -294,7 +220,14 @@ export default function Profile() {
   };
 
   const handleCancel = () => {
-    setFormData({ ...user });
+    setFormData({
+      full_name: user?.full_name || user?.fullName || '',
+      dob: user?.dob || '',
+      gender: user?.gender || '',
+      phone: user?.phone || '',
+      email: user?.email || '',
+      national_id: user?.national_id || user?.nationalId || '',
+    });
     setIsEditing(false);
   };
 
@@ -303,7 +236,6 @@ export default function Profile() {
       <FontLoader />
       <div className="profile-page">
 
-        {/* HEADER */}
         <div className="profile-header">
           <div>
             <h1>My Profile</h1>
@@ -320,39 +252,30 @@ export default function Profile() {
                   <X size={16} /> Cancel
                 </button>
                 <button onClick={handleSave} disabled={saving} className="btn btn-save">
-                  {saving
-                    ? <><div className="spinner" /> Saving...</>
-                    : <><Save size={16} /> Save Changes</>
-                  }
+                  {saving ? <><div className="spinner" /> Saving...</> : <><Save size={16} /> Save Changes</>}
                 </button>
               </>
             )}
           </div>
         </div>
 
-        {/* GRID */}
         <div className="profile-grid">
 
-          {/* ── LEFT — Summary Card ── */}
+          {/* LEFT — Summary Card */}
           <div className="pcard summary-card">
-
             <div className="avatar-wrap">
-              {user?.fullName?.charAt(0).toUpperCase()}
+              {/* ✅ Use displayName which handles both full_name and fullName */}
+              {displayName.charAt(0).toUpperCase() || '?'}
               {isEditing && (
-                <div className="avatar-edit-overlay">
-                  <Edit2 size={20} />
-                </div>
+                <div className="avatar-edit-overlay"><Edit2 size={20} /></div>
               )}
             </div>
 
-            <div className="summary-name">{user?.fullName || 'Patient'}</div>
-            <div className="summary-since">
-              Member Since {new Date().getFullYear()}
-            </div>
+            <div className="summary-name">{displayName || 'Patient'}</div>
+            <div className="summary-since">Member Since {new Date().getFullYear()}</div>
 
             <div className="divider-line" />
 
-            {/* Verified Badge */}
             <div className="verified-badge">
               <ShieldCheck className="badge-icon" size={20} />
               <div>
@@ -361,7 +284,6 @@ export default function Profile() {
               </div>
             </div>
 
-            {/* Real Stats */}
             <div className="stats-row">
               <div className="stat-item">
                 <div className="stat-num">{totalAppointments}</div>
@@ -372,10 +294,9 @@ export default function Profile() {
                 <div className="stat-lbl">Upcoming</div>
               </div>
             </div>
-
           </div>
 
-          {/* ── RIGHT — Personal Information Card ── */}
+          {/* RIGHT — Personal Information Card */}
           <div className="pcard">
             <div className="fields-header">
               <div>
@@ -386,10 +307,11 @@ export default function Profile() {
             </div>
 
             <div className="fields-grid">
+              {/* ✅ All fields now use full_name, national_id (backend keys) */}
               <ProfileField
-                label="Full Name" value={formData.fullName}
+                label="Full Name" value={formData.full_name}
                 isEditing={isEditing} icon={<User size={14} />}
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
               />
               <ProfileField
                 label="Date of Birth" value={formData.dob}
@@ -397,7 +319,7 @@ export default function Profile() {
                 onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
               />
               <ProfileField
-                label="National ID" value={formData.nationalId}
+                label="National ID" value={formData.national_id}
                 readOnly icon={<IdCard size={14} />}
               />
               <ProfileField

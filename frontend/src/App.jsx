@@ -7,12 +7,19 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import PatientDashboard from './pages/dashboard/PatientDashboard'
 import AdminDashboard from './pages/admin/AdminDashboard'
+import DoctorDashboard from './pages/doctor/DoctorDashboard'
 import './index.css'
 
+// ProtectedRoute — now supports multiple roles
 const ProtectedRoute = ({ children, requiredRole }) => {
   const { user } = useAuth()
   if (!user) return <Navigate to="/login" replace />
-  if (requiredRole && user.role !== requiredRole) return <Navigate to="/login" replace />
+
+  if (requiredRole) {
+    const allowed = Array.isArray(requiredRole) ? requiredRole : [requiredRole]
+    if (!allowed.includes(user.role)) return <Navigate to="/login" replace />
+  }
+
   return children
 }
 
@@ -55,6 +62,13 @@ const AppRoutes = () => {
           <AdminDashboard />
         </ProtectedRoute>
       } />
+
+      <Route path="/doctor/*" element={
+        <ProtectedRoute requiredRole="doctor">
+          <DoctorDashboard />
+        </ProtectedRoute>
+      } />
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

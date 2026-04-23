@@ -2,32 +2,33 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
-const API_URL = 'https://mediconnect-pa9z.onrender.com/api';
+const API_URL = '/api';
+
 export const useAuth = () => useContext(AuthContext);
+
+// 🔧 Normalize backend user → frontend user
+const normalizeUser = (user) => ({
+    id: user.id,
+    fullName: user.full_name,
+    role: user.role,
+    phone: user.phone,
+    gender: user.gender,
+    dob: user.dob,
+    nationalId: user.national_id
+});
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // ── Restore user from localStorage on page refresh ──
+    // ── RESTORE SESSION ──
     useEffect(() => {
         const savedUser = localStorage.getItem('user');
         const savedToken = localStorage.getItem('access_token');
 
-        if (savedUser &&
-            savedToken &&
-            savedToken !== 'undefined' &&
-            savedToken !== 'null') {
-
-            // ← Set axios FIRST before anything
+        if (savedUser && savedToken && savedToken !== 'undefined') {
             axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`;
-
-            // ← Then restore user
             setUser(JSON.parse(savedUser));
-
-            console.log('✅ Token restored:', savedToken.substring(0, 30) + '...');
-        } else {
-            console.log('❌ No valid token in localStorage');
         }
 
         setLoading(false);
@@ -36,41 +37,33 @@ export const AuthProvider = ({ children }) => {
     // ── LOGIN ──
     const login = async (nationalId, password) => {
         try {
-            console.log('🔵 Login attempt:', nationalId);
-
             const response = await axios.post(`${API_URL}/login/`, {
                 nationalId,
                 password
             });
 
-            console.log('🔵 Raw response:', response);
-            console.log('🔵 Response data:', response.data);
-            console.log('🔵 Tokens object:', response.data.tokens);
-            console.log('🔵 Access token:', response.data.tokens?.access);
-
             const { user, tokens } = response.data;
 
-            if (!tokens || !tokens.access) {
-                console.error('❌ NO TOKEN!', response.data);
+            if (!tokens?.access) {
                 return { success: false, message: 'No token received' };
             }
 
-            console.log('🔵 Setting localStorage...');
-            localStorage.setItem('user', JSON.stringify(user));
+            const normalizedUser = normalizeUser(user);
+
+            axios.defaults.headers.common['Authorization'] = `Bearer ${tokens.access}`;
+
+            setUser(normalizedUser);
+            localStorage.setItem('user', JSON.stringify(normalizedUser));
             localStorage.setItem('access_token', tokens.access);
             localStorage.setItem('refresh_token', tokens.refresh);
 
-            console.log('🔵 localStorage after set:');
-            console.log('   user:', localStorage.getItem('user'));
-            console.log('   token:', localStorage.getItem('access_token'));
-
-            axios.defaults.headers.common['Authorization'] = `Bearer ${tokens.access}`;
-            setUser(user);
-
-            return { success: true, role: user.role, token: tokens.access };
+            return {
+                success: true,
+                role: normalizedUser.role,
+                token: tokens.access
+            };
 
         } catch (error) {
-            console.error('❌ Login error:', error);
             return {
                 success: false,
                 message: error.response?.data?.message || "Login failed."
@@ -81,36 +74,54 @@ export const AuthProvider = ({ children }) => {
     // ── SIGNUP ──
     const signup = async (userData) => {
         try {
-            const response = await axios.post(`${API_URL}/signup/`, userData);
+            const payload = {
+                full_name: userData.fullName,
+                national_id: userData.nationalId,
+                dob: userData.dob,
+                gender: userData.gender,
+                phone: userData.phone,
+                password: userData.password,
+            };
+
+            const response = await axios.post(`${API_URL}/signup/`, payload);
+
             const { user, tokens } = response.data;
 
-            if (!tokens || !tokens.access) {
+            if (!tokens?.access) {
                 return { success: false, message: 'No token received from server' };
             }
 
-            // ← Set axios IMMEDIATELY
+            const normalizedUser = normalizeUser(user);
+
             axios.defaults.headers.common['Authorization'] = `Bearer ${tokens.access}`;
 
-            setUser(user);
-            localStorage.setItem('user', JSON.stringify(user));
+            setUser(normalizedUser);
+            localStorage.setItem('user', JSON.stringify(normalizedUser));
             localStorage.setItem('access_token', tokens.access);
             localStorage.setItem('refresh_token', tokens.refresh);
 
-            console.log('✅ Signup successful, token set');
-
-            return { success: true, token: tokens.access };
+            return {
+                success: true,
+                token: tokens.access
+            };
 
         } catch (error) {
             let errorMessage = "Signup failed.";
+
             if (error.response?.data) {
-                if (error.response.data.message) {
-                    errorMessage = error.response.data.message;
-                } else if (typeof error.response.data === 'object') {
-                    const firstKey = Object.keys(error.response.data)[0];
-                    const firstError = error.response.data[firstKey];
-                    errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
+                const data = error.response.data;
+
+                if (data.message) {
+                    errorMessage = data.message;
+                } else {
+                    const firstKey = Object.keys(data)[0];
+                    const firstError = data[firstKey];
+                    errorMessage = Array.isArray(firstError)
+                        ? firstError[0]
+                        : firstError;
                 }
             }
+
             return { success: false, message: errorMessage };
         }
     };
@@ -122,7 +133,6 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         delete axios.defaults.headers.common['Authorization'];
-        console.log('✅ Logged out, token cleared');
     };
 
     // ── UPDATE PROFILE ──

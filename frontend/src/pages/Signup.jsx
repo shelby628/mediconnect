@@ -69,7 +69,7 @@ const FontLoader = () => (
     }
     .s-left-body { z-index: 1; }
     .s-left-body h2 {
-      font-family: 'Playfair Display', serif;
+      font-family:'Inter', sans-serif;
       font-size: clamp(2rem, 3vw, 2.8rem);
       font-weight: 900; color: #fff;
       line-height: 1.15; margin-bottom: 1.2rem;
@@ -117,7 +117,7 @@ const FontLoader = () => (
       letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.6rem;
     }
     .s-form-header h1 {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Inter', sans-serif;
       font-size: 2.2rem; font-weight: 900;
       color: var(--text); letter-spacing: -0.03em;
       line-height: 1.1; margin-bottom: 0.5rem;
@@ -278,7 +278,7 @@ export default function Signup() {
                         <span className="s-logo-text">MediConnect</span>
                     </div>
                     <div className="s-left-body">
-                        <h2>Join us &<br /><em>take control.</em></h2>
+                        <h2>Join us and<br />take control.</h2>
                         <p>Create your account in minutes and get instant access to all MediConnect services.</p>
                         <div className="s-steps">
                             <div className="s-step"><div className="s-step-num">1</div> Fill in your personal details</div>
@@ -317,14 +317,16 @@ export default function Signup() {
                                     />
                                 </div>
 
-                                <div className="s-field">
-                                    <label>Date of Birth</label>
-                                    <input
-                                        name="dob" type="date" required
-                                        value={formData.dob}
-                                        onChange={handleChange}
-                                    />
-                                </div>
+                               <div className="s-field">
+    <label>Date of Birth</label>
+    <input
+        name="dob" type="date" required
+        value={formData.dob}
+        onChange={handleChange}
+        max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0]}
+        min="1900-01-01"
+    />
+</div>
 
                                 <div className="s-field">
                                     <label>National ID</label>

@@ -24,7 +24,6 @@ const FontLoader = () => (
       max-width: 1200px;
     }
 
-    /* ── HEADER ── */
     .da-header { margin-bottom: 2rem; }
     .da-header h1 {
       font-family: 'Sans-serif', serif;
@@ -33,7 +32,6 @@ const FontLoader = () => (
     }
     .da-header p { color: var(--muted); font-size: 0.95rem; }
 
-    /* ── FILTERS ── */
     .filters-bar {
       display: flex; gap: 1rem; flex-wrap: wrap;
       background: var(--white);
@@ -42,9 +40,7 @@ const FontLoader = () => (
       margin-bottom: 2rem;
       box-shadow: 0 2px 16px rgba(26,16,8,0.05);
     }
-    .search-wrap {
-      flex: 1; min-width: 260px; position: relative;
-    }
+    .search-wrap { flex: 1; min-width: 260px; position: relative; }
     .search-wrap svg {
       position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
       color: var(--muted); pointer-events: none;
@@ -64,9 +60,7 @@ const FontLoader = () => (
     }
     .search-input::placeholder { color: #C4B8A8; }
 
-    .filter-select-wrap {
-      width: 220px; position: relative;
-    }
+    .filter-select-wrap { width: 220px; position: relative; }
     .filter-select-wrap svg {
       position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
       color: var(--muted); pointer-events: none;
@@ -85,21 +79,18 @@ const FontLoader = () => (
       box-shadow: 0 0 0 4px rgba(123,45,62,0.08);
     }
 
-    /* ── RESULTS COUNT ── */
     .results-label {
       font-size: 0.82rem; font-weight: 700;
       color: var(--muted); text-transform: uppercase;
       letter-spacing: 0.08em; margin-bottom: 1.2rem;
     }
 
-    /* ── DOCTORS GRID ── */
     .doctors-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 1.4rem;
     }
 
-    /* ── DOCTOR CARD ── */
     .doc-card {
       background: var(--white);
       border-radius: 22px;
@@ -112,15 +103,12 @@ const FontLoader = () => (
       transform: translateY(-5px);
       box-shadow: 0 16px 48px rgba(123,45,62,0.12);
     }
-    .doc-card-top {
-      height: 5px;
-    }
-    .doc-card-top.available  { background: linear-gradient(to right, var(--primary), var(--primary-light)); }
-    .doc-card-top.booked     { background: linear-gradient(to right, #F97316, #FB923C); }
-    .doc-card-top.unavailable{ background: linear-gradient(to right, #EF4444, #F87171); }
+    .doc-card-top { height: 5px; }
+    .doc-card-top.available   { background: linear-gradient(to right, var(--primary), var(--primary-light)); }
+    .doc-card-top.booked      { background: linear-gradient(to right, #F97316, #FB923C); }
+    .doc-card-top.unavailable { background: linear-gradient(to right, #EF4444, #F87171); }
 
     .doc-card-body { padding: 1.6rem; }
-
     .doc-card-head {
       display: flex; justify-content: space-between;
       align-items: flex-start; margin-bottom: 1.2rem;
@@ -131,8 +119,7 @@ const FontLoader = () => (
       display: flex; align-items: center; justify-content: center;
       font-family: 'Playfair Display', serif;
       font-size: 1.3rem; font-weight: 900;
-      color: var(--primary-dark);
-      transition: background 0.2s;
+      color: var(--primary-dark); transition: background 0.2s;
     }
     .doc-card:hover .doc-avatar { background: rgba(123,45,62,0.15); }
 
@@ -147,18 +134,15 @@ const FontLoader = () => (
     .doc-name {
       font-family: 'calibri', serif;
       font-size: 1.15rem; font-weight: 900;
-      color: var(--text); margin-bottom: 3px;
-      transition: color 0.2s;
+      color: var(--text); margin-bottom: 3px; transition: color 0.2s;
     }
     .doc-card:hover .doc-name { color: var(--primary); }
     .doc-specialty { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
-
     .doc-dept {
       display: inline-flex; align-items: center; gap: 5px;
       margin-top: 0.8rem;
       font-size: 0.75rem; font-weight: 700;
-      color: var(--muted); text-transform: uppercase;
-      letter-spacing: 0.07em;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em;
     }
     .doc-dept svg { color: var(--primary); }
 
@@ -170,16 +154,12 @@ const FontLoader = () => (
       width: 100%; padding: 0.8rem;
       border-radius: 50px; border: none;
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.92rem; font-weight: 700;
-      cursor: pointer;
+      font-size: 0.92rem; font-weight: 700; cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 8px;
       transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
     }
     .btn-book.active {
       background: var(--primary); color: #fff;
-      width: auto;
-      padding: 0.7rem 1.8rem;
-      align-self: flex-star;
       box-shadow: 0 6px 20px rgba(123,45,62,0.28);
     }
     .btn-book.active:hover {
@@ -191,23 +171,19 @@ const FontLoader = () => (
       cursor: not-allowed; opacity: 0.7;
     }
 
-    /* ── MODAL OVERLAY ── */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 200;
       background: rgba(26,16,8,0.45);
       backdrop-filter: blur(6px);
       display: flex; align-items: center; justify-content: center;
-      padding: 2rem;
-      animation: fadeIn 0.2s ease;
+      padding: 2rem; animation: fadeIn 0.2s ease;
     }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .modal {
-      background: var(--white);
-      border-radius: 28px;
+      background: var(--white); border-radius: 28px;
       box-shadow: 0 30px 80px rgba(26,16,8,0.2);
-      width: 100%; max-width: 500px;
-      overflow: hidden;
+      width: 100%; max-width: 500px; overflow: hidden;
       animation: slideUp 0.25s ease;
     }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.97); } to { opacity: 1; transform: none; } }
@@ -218,8 +194,7 @@ const FontLoader = () => (
     }
     .modal-header h2 {
       font-family: 'Playfair Display', serif;
-      font-size: 1.6rem; font-weight: 900; color: var(--text);
-      margin-bottom: 3px;
+      font-size: 1.6rem; font-weight: 900; color: var(--text); margin-bottom: 3px;
     }
     .modal-header p { color: var(--muted); font-size: 0.88rem; }
     .modal-close {
@@ -246,7 +221,6 @@ const FontLoader = () => (
     .modal-doc-spec { font-size: 0.8rem; color: var(--muted); }
 
     .modal-body { padding: 0 2rem 2rem; }
-
     .mfield { margin-bottom: 1.2rem; }
     .mfield label {
       display: block; font-size: 0.75rem; font-weight: 700;
@@ -267,7 +241,6 @@ const FontLoader = () => (
       background: var(--white);
     }
     .mfield textarea { resize: none; height: 100px; }
-
     .mfields-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
     .btn-confirm {
@@ -282,10 +255,7 @@ const FontLoader = () => (
     }
     .btn-confirm:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(123,45,62,0.4); }
 
-    /* ── SUCCESS STATE ── */
-    .success-body {
-      padding: 3rem 2rem; text-align: center;
-    }
+    .success-body { padding: 3rem 2rem; text-align: center; }
     .success-icon {
       width: 80px; height: 80px; border-radius: 50%;
       background: rgba(123,45,62,0.1); color: var(--primary);
@@ -310,10 +280,11 @@ export default function DoctorAvailability() {
   const [bookingData, setBookingData] = useState({ date: '', time: '', notes: '' });
   const [bookingStep, setBookingStep] = useState(1);
 
+  // ✅ FIX: was doc.name — field is now full_name from the updated DoctorSerializer
   const filteredDoctors = doctors.filter(doc => {
     const matchesSearch =
-      doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doc.specialty.toLowerCase().includes(searchTerm.toLowerCase());
+      (doc.full_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (doc.specialty || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDept = selectedDept === 'All' || doc.department === selectedDept;
     return matchesSearch && matchesDept;
   });
@@ -335,21 +306,22 @@ export default function DoctorAvailability() {
     return 'unavailable';
   };
 
+  // ✅ Safe initials helper — won't crash if full_name is undefined
+  const getInitials = (name) =>
+    (name || '??').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+
   return (
     <>
       <FontLoader />
       <div className="da-page">
 
-        {/* HEADER */}
         <div className="da-header">
           <h1>Doctor Availability</h1>
           <p>Find and book appointments with our specialists</p>
         </div>
 
-        {/* FILTERS */}
         <div className="filters-bar">
           <div className="search-wrap">
-
             <input
               className="search-input"
               type="text"
@@ -371,29 +343,26 @@ export default function DoctorAvailability() {
           </div>
         </div>
 
-        {/* RESULTS */}
-        <div className="results-label">{filteredDoctors.length} doctor{filteredDoctors.length !== 1 ? 's' : ''} found</div>
+        <div className="results-label">
+          {filteredDoctors.length} doctor{filteredDoctors.length !== 1 ? 's' : ''} found
+        </div>
 
-        {/* GRID */}
         <div className="doctors-grid">
           {filteredDoctors.map((doc) => (
             <div className="doc-card" key={doc.id}>
               <div className={`doc-card-top ${statusClass(doc.status)}`} />
               <div className="doc-card-body">
                 <div className="doc-card-head">
-                  <div className="doc-avatar">
-                    {doc.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                  </div>
+                  {/* ✅ FIX: was doc.name */}
+                  <div className="doc-avatar">{getInitials(doc.full_name)}</div>
                   <span className={`status-pill ${statusClass(doc.status)}`}>
-                    {doc.status === 'Available' ? '● ' : '● '}{doc.status}
+                    ● {doc.status}
                   </span>
                 </div>
-
-                <div className="doc-name">{doc.name}</div>
+                {/* ✅ FIX: was doc.name */}
+                <div className="doc-name">{doc.full_name}</div>
                 <div className="doc-specialty">{doc.specialty}</div>
-                <div className="doc-dept">
-                  <MapPin size={13} /> {doc.department}
-                </div>
+                <div className="doc-dept"><MapPin size={13} /> {doc.department}</div>
 
                 <div className="doc-card-footer">
                   <button
@@ -410,7 +379,6 @@ export default function DoctorAvailability() {
           ))}
         </div>
 
-        {/* MODAL */}
         {selectedDoctor && (
           <div className="modal-overlay" onClick={() => setSelectedDoctor(null)}>
             <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -428,12 +396,13 @@ export default function DoctorAvailability() {
                   </div>
 
                   <div className="modal-doctor-row">
-                    <div className="modal-doc-avatar">
-                      {selectedDoctor.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                    </div>
+                    {/* ✅ FIX: was selectedDoctor.name */}
+                    <div className="modal-doc-avatar">{getInitials(selectedDoctor.full_name)}</div>
                     <div>
-                      <div className="modal-doc-name">{selectedDoctor.name}</div>
-                      <div className="modal-doc-spec">{selectedDoctor.specialty} · {selectedDoctor.department}</div>
+                      <div className="modal-doc-name">{selectedDoctor.full_name}</div>
+                      <div className="modal-doc-spec">
+                        {selectedDoctor.specialty} · {selectedDoctor.department}
+                      </div>
                     </div>
                   </div>
 
@@ -444,6 +413,7 @@ export default function DoctorAvailability() {
                           <label><Calendar size={12} style={{ display: 'inline', marginRight: 4 }} />Date</label>
                           <input
                             type="date" required
+                            min={new Date().toISOString().split('T')[0]}
                             value={bookingData.date}
                             onChange={(e) => setBookingData({ ...bookingData, date: e.target.value })}
                           />
@@ -452,6 +422,9 @@ export default function DoctorAvailability() {
                           <label><Clock size={12} style={{ display: 'inline', marginRight: 4 }} />Time</label>
                           <input
                             type="time" required
+                            min={bookingData.date === new Date().toISOString().split('T')[0]
+                              ? new Date().toTimeString().slice(0, 5)
+                              : undefined}
                             value={bookingData.time}
                             onChange={(e) => setBookingData({ ...bookingData, time: e.target.value })}
                           />
@@ -478,6 +451,7 @@ export default function DoctorAvailability() {
                   <p>Your appointment request has been sent to the hospital for approval. You'll be notified shortly.</p>
                 </div>
               )}
+
             </div>
           </div>
         )}

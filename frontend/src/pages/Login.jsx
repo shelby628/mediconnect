@@ -5,7 +5,7 @@ import { ArrowLeft, Eye, EyeOff, LogIn } from 'lucide-react';
 import { useData } from '../context/DataContext';
 
 const FontLoader = () => (
-    <style>{`
+  <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -215,133 +215,135 @@ const FontLoader = () => (
 );
 
 export default function Login() {
-    // ✅ Changed from fullName to nationalId
-    const [formData, setFormData] = useState({ nationalId: '', password: '' });
-    const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-    const { login } = useAuth();
-    const { refreshAllData } = useData();
-    const navigate = useNavigate();
+  // ✅ Changed from fullName to nationalId
+  const [formData, setFormData] = useState({ nationalId: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const { refreshAllData } = useData();
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
-        // ✅ Sends nationalId instead of fullName
-        const result = await login(formData.nationalId, formData.password);
+    // ✅ Sends nationalId instead of fullName
+    const result = await login(formData.nationalId, formData.password);
 
-        if (result.success) {
-            if (result.token) {
-                refreshAllData(result.token);
-            }
-            navigate(result.role === 'admin' ? '/admin' : '/dashboard');
-        } else {
-            setError(result.message);
-            setLoading(false);
-        }
-    };
+    if (result.success) {
+      if (result.token) {
+        refreshAllData(result.token);
+      }
+      if (result.role === 'admin') navigate('/admin');
+      else if (result.role === 'doctor') navigate('/doctor');
+      else navigate('/dashboard');
+    } else {
+      setError(result.message);
+      setLoading(false);
+    }
+  };
 
-    return (
-        <>
-            <FontLoader />
-            <div className="login-page">
+  return (
+    <>
+      <FontLoader />
+      <div className="login-page">
 
-                {/* LEFT PANEL */}
-                <div className="login-left">
-                    <div className="left-logo">
-                        <div className="left-logo-icon">M</div>
-                        <span className="left-logo-text">MediConnect</span>
-                    </div>
-                    <div className="left-body">
-                        <h2>Your health,<br /><em>beautifully managed.</em></h2>
-                        <p>Sign in to access your appointments, medical records, and real-time doctor availability — all in one place.</p>
-                        <div className="left-pills">
-                            <span className="pill"> Smart Booking</span>
-                            <span className="pill">Secure Records</span>
-                            <span className="pill"> Visit History</span>
-                            <span className="pill"> Real-time Updates</span>
-                        </div>
-                    </div>
-                    <div className="left-footer">© 2026 MediConnect · Healthcare Solutions</div>
-                </div>
-
-                {/* RIGHT PANEL */}
-                <div className="login-right">
-                    <Link to="/" className="back-link">
-                        <ArrowLeft size={16} /> Back to Home
-                    </Link>
-
-                    <div className="login-form-wrap">
-                        <div className="form-header">
-                            <div className="eyebrow">Welcome back</div>
-                            <h1>Sign In</h1>
-                            <p>Enter your credentials to access your account</p>
-                        </div>
-
-                        {error && (
-                            <div className="error-box">
-                                <span>⚠</span> {error}
-                            </div>
-                        )}
-
-                        <form onSubmit={handleSubmit}>
-
-                            {/* ✅ National ID field */}
-                            <div className="field">
-                                <label>National ID</label>
-                                <input
-                                    type="text"
-                                    placeholder="e.g. 12345678"
-                                    required
-                                    value={formData.nationalId}
-                                    onChange={(e) => setFormData({ ...formData, nationalId: e.target.value })}
-                                />
-                            </div>
-
-                            {/* Password field */}
-                            <div className="field">
-                                <label>Password</label>
-                                <div className="password-wrap">
-                                    <input
-                                        type={showPassword ? 'text' : 'password'}
-                                        placeholder="Enter your password"
-                                        required
-                                        value={formData.password}
-                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    />
-                                    <button
-                                        type="button"
-                                        className="toggle-pw"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                    >
-                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                    </button>
-                                </div>
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="btn-submit"
-                                disabled={loading}
-                            >
-                                {loading
-                                    ? <><div className="spinner" /> Signing In...</>
-                                    : <><LogIn size={18} /> Sign In</>
-                                }
-                            </button>
-                        </form>
-
-                        <div className="divider">or</div>
-
-                        <p className="form-footer">
-                            Don't have an account? <Link to="/signup">Register Now</Link>
-                        </p>
-                    </div>
-                </div>
-
+        {/* LEFT PANEL */}
+        <div className="login-left">
+          <div className="left-logo">
+            <div className="left-logo-icon">M</div>
+            <span className="left-logo-text">MediConnect</span>
+          </div>
+          <div className="left-body">
+            <h2>Your health,<br /><em>beautifully managed.</em></h2>
+            <p>Sign in to access your appointments, medical records, and real-time doctor availability — all in one place.</p>
+            <div className="left-pills">
+              <span className="pill"> Smart Booking</span>
+              <span className="pill">Secure Records</span>
+              <span className="pill"> Visit History</span>
+              <span className="pill"> Real-time Updates</span>
             </div>
-        </>
-    );
+          </div>
+          <div className="left-footer">© 2026 MediConnect · Healthcare Solutions</div>
+        </div>
+
+        {/* RIGHT PANEL */}
+        <div className="login-right">
+          <Link to="/" className="back-link">
+            <ArrowLeft size={16} /> Back to Home
+          </Link>
+
+          <div className="login-form-wrap">
+            <div className="form-header">
+              <div className="eyebrow">Welcome back</div>
+              <h1>Sign In</h1>
+              <p>Enter your credentials to access your account</p>
+            </div>
+
+            {error && (
+              <div className="error-box">
+                <span>⚠</span> {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit}>
+
+              {/* ✅ National ID field */}
+              <div className="field">
+                <label>National ID</label>
+                <input
+                  type="text"
+                  placeholder="e.g. 12345678"
+                  required
+                  value={formData.nationalId}
+                  onChange={(e) => setFormData({ ...formData, nationalId: e.target.value })}
+                />
+              </div>
+
+              {/* Password field */}
+              <div className="field">
+                <label>Password</label>
+                <div className="password-wrap">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter your password"
+                    required
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  />
+                  <button
+                    type="button"
+                    className="toggle-pw"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="btn-submit"
+                disabled={loading}
+              >
+                {loading
+                  ? <><div className="spinner" /> Signing In...</>
+                  : <><LogIn size={18} /> Sign In</>
+                }
+              </button>
+            </form>
+
+            <div className="divider">or</div>
+
+            <p className="form-footer">
+              Don't have an account? <Link to="/signup">Register Now</Link>
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </>
+  );
 }

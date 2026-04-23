@@ -1,29 +1,45 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
+# =========================
+# CUSTOM USER MODEL
+# =========================
 class User(AbstractUser):
     full_name = models.CharField(max_length=255)
     dob = models.DateField(null=True, blank=True)
     national_id = models.CharField(max_length=50, unique=True)
-    gender = models.CharField(max_length=20, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')])
+
+    gender = models.CharField(
+        max_length=20,
+        choices=[('Male', 'Male'), ('Female', 'Other')]
+    )
+
     phone = models.CharField(max_length=20)
+
     username = models.CharField(max_length=50, unique=True)
-    email = models.EmailField(unique=True, null=True, blank=True, default=None)
+    email = models.EmailField(unique=True, null=True, blank=True)
+
     role = models.CharField(
         max_length=20,
         choices=[
             ('patient', 'Patient'),
-            ('admin', 'Admin'),
-            ('doctor', 'Doctor')
+            ('doctor', 'Doctor'),
+            ('admin', 'Admin')
         ],
         default='patient'
     )
-    REQUIRED_FIELDS = ['full_name', 'phone']
+
+    # ✅ FIX: ensures createsuperuser asks for these
+    REQUIRED_FIELDS = ['email', 'national_id']
 
     def __str__(self):
         return self.full_name
 
 
+# =========================
+# DOCTOR PROFILE
+# =========================
 class Doctor(models.Model):
     STATUS_CHOICES = [
         ('Available', 'Available'),
@@ -31,10 +47,16 @@ class Doctor(models.Model):
         ('Unavailable', 'Unavailable'),
     ]
 
-    name = models.CharField(max_length=255)
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='doctor_profile'
+    )
+
     department = models.CharField(max_length=100)
     specialty = models.CharField(max_length=100)
     phone = models.CharField(max_length=20, null=True, blank=True)
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
@@ -42,9 +64,12 @@ class Doctor(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return self.user.full_name
 
 
+# =========================
+# APPOINTMENT
+# =========================
 class Appointment(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
@@ -53,16 +78,10 @@ class Appointment(models.Model):
         ('Cancelled', 'Cancelled'),
     ]
 
-    TYPE_CHOICES = [
-        ('Upcoming', 'Upcoming'),
-        ('Past', 'Past'),
-    ]
-
-    # ── Belongs to a patient ──
     patient = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='appointments'
+        related_name='appointments_as_patient'
     )
 
     doctor = models.ForeignKey(
@@ -74,46 +93,41 @@ class Appointment(models.Model):
 
     date_time = models.DateTimeField()
     notes = models.TextField(null=True, blank=True)
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default='Pending'
     )
-    type = models.CharField(
-        max_length=20,
-        choices=TYPE_CHOICES,
-        default='Upcoming'
-    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"APT-{self.id} | {self.patient.full_name} → {self.doctor.name}"
+        doctor_name = self.doctor.user.full_name if self.doctor else "No Doctor"
+        return f"APT-{self.id} | {self.patient.full_name} → {doctor_name}"
 
 
+# =========================
+# CONSULTATION
+# =========================
 class Consultation(models.Model):
-    # ── Belongs to a patient ──
-    patient = models.ForeignKey(
-        User,
+    appointment = models.OneToOneField(
+        Appointment,
         on_delete=models.CASCADE,
-        related_name='consultations'
+        related_name='consultation'
     )
 
-    doctor = models.ForeignKey(
-        Doctor,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='consultations'
-    )
-
-    date = models.DateField()
-    notes = models.TextField(null=True, blank=True)
+    notes = models.TextField()
     follow_up = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"CNS-{self.id} | {self.patient.full_name} → {self.doctor.name}"
+        return f"CNS-{self.id} | {self.appointment.patient.full_name}"
 
 
+# =========================
+# SUPPORT TICKETS
+# =========================
 class Ticket(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
@@ -129,7 +143,6 @@ class Ticket(models.Model):
         ('Other', 'Other'),
     ]
 
-    # ── Belongs to a patient ──
     patient = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -137,18 +150,23 @@ class Ticket(models.Model):
     )
 
     subject = models.CharField(max_length=255)
+
     type = models.CharField(
         max_length=20,
         choices=TYPE_CHOICES,
         default='Technical'
     )
+
     message = models.TextField()
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default='Pending'
     )
+
     response = models.TextField(null=True, blank=True)
+
     date = models.DateField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -156,17 +174,22 @@ class Ticket(models.Model):
         return f"TKT-{self.id} | {self.patient.full_name} - {self.subject}"
 
 
+# =========================
+# NOTIFICATIONS
+# =========================
 class Notification(models.Model):
-    # ── Belongs to a patient ──
     patient = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name='notifications'
     )
 
     title = models.CharField(max_length=255)
     message = models.TextField()
     type = models.CharField(max_length=50, null=True, blank=True)
+
     read = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
 
